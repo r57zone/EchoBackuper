@@ -1,23 +1,28 @@
-[![EN](https://user-images.githubusercontent.com/9499881/33184537-7be87e86-d096-11e7-89bb-f3286f752bc6.png)](https://github.com/r57zone/Firewall-Easy/blob/master/README.md) 
-[![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/Firewall-Easy/blob/master/README.RU.md) 
-# Firewall Easy
-Application allows you to block Internet access to other applications using the Windows Firewall.
+[![EN](https://user-images.githubusercontent.com/9499881/33184537-7be87e86-d096-11e7-89bb-f3286f752bc6.png)](https://github.com/r57zone/EchoBackaper/blob/master/README.md) 
+[![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/EchoBackaper/blob/master/README.RU.md)
+# EchoBackaper
+Application for backups. Backups are created using the echo principle. New and updated files are copied from the original folder to the backup folder. Renames and deletes of files occurs only in the backup.
 
-## Features
-- **Blocking access in a single click**<br>
-![](https://user-images.githubusercontent.com/9499881/34356520-d2cbf3ce-ea57-11e7-80e9-b78bb56c4173.png)<br>
+## Silent Mode
+>EchoBackaper.exe -p "SilentPairFolders.txt" -e "SilentExcludeFolders.txt" /silent
 
-Right-click on the program to block her access to the Internet.
-- **Support Drag and Drop**
+**"-p <file>"** - load a different list of pair folders.
 
-Move the program to the "Firewall Easy" interface and access to the Internet will be blocked.
+**"-e <file>"** - load a different list of exclude folders.
 
-## Screenshot
-![](https://user-images.githubusercontent.com/9499881/42877820-fc9a0698-8a9b-11e8-970d-1e4410533048.png)
+**"/silent"** - silent mode with final notification. For notifications need to download the application ["Notifications"](https://github.com/r57zone/notifications), unpack to "Program Files" and run 1 time.
+
+![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
+
+## Screenshots
+![](https://user-images.githubusercontent.com/9499881/65593907-94767d00-dfa2-11e9-8873-6308d5e6e127.png)
+
+![](https://user-images.githubusercontent.com/9499881/65594220-5e85c880-dfa3-11e9-87c8-9b5648893299.png)
 
 ## Download
 >Version for Windows 7, 8.1, 10.
 
-**[Download](https://github.com/r57zone/Firewall-Easy/releases)**
+**[Download](https://github.com/r57zone/EchoBackaper/releases)**
+
 ## Feedback
 `r57zone[at]gmail.com`
