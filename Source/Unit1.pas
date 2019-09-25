@@ -374,9 +374,9 @@ begin
   ID_SELECT_EXCLUDE_FOLDER:=Ini.ReadString('Main', 'ID_SELECT_EXCLUDE_FOLDER', '');
   ID_OK:=Ini.ReadString('Main', 'ID_OK', '');
   ID_CANCEL:=Ini.ReadString('Main', 'ID_CANCEL', '');
+  Ini.Free;
 
   Application.Title:=Caption;
-
 
   for i:=1 to ParamCount do begin
     if ParamStr(i) = '-p' then
