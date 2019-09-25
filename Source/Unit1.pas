@@ -150,7 +150,7 @@ begin
 
             FindClose(RemoteFile);
         end else begin
-          //Создаем если папки не существует и её нет в списке игнорируемых
+           //Создаём папку если её не существует и её нет в списке игнорируемых
           if (not DirectoryExists(RemoteFolder + LocalFile.Name)) and (Pos(LocalFolder + LocalFile.Name, ExcludePaths.Text) = 0) then
             Actions.Add('MKDIR ' + RemoteFolder + LocalFile.Name);
           CheckFilesDiff(LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name);
@@ -337,43 +337,43 @@ begin
   CBCheckLog.Caption:=Ini.ReadString('Main', 'ID_VIEW_TASKS', '');
 
   ID_LOOKING_CHANGES:=Ini.ReadString('Main', 'ID_LOOKING_CHANGES', '');
-	ID_FILE_RENAMED:=Ini.ReadString('Main', 'ID_FILE_RENAMED', '');
-	ID_FOUND_NEW_FILE:=Ini.ReadString('Main', 'ID_FOUND_NEW_FILE', '');
-	ID_FILE_UPDATED:=Ini.ReadString('Main', 'ID_FILE_UPDATED', '');
-	ID_FOUND_OLD_FILE:=Ini.ReadString('Main', 'ID_FOUND_OLD_FILE', '');
-	ID_COPY_FILE:=Ini.ReadString('Main', 'ID_COPY_FILE', '');
-	ID_RENAME_FILE:=Ini.ReadString('Main', 'ID_RENAME_FILE', '');
-	ID_REMOVE_FILE:=Ini.ReadString('Main', 'ID_REMOVE_FILE', '');
-	ID_CREATE_FOLDER:=Ini.ReadString('Main', 'ID_CREATE_FOLDER', '');
-	ID_REMOVE_FOLDER:=Ini.ReadString('Main', 'ID_REMOVE_FOLDER', '');
-	ID_COMPLETED:=Ini.ReadString('Main', 'ID_COMPLETED', '');
-	ID_COMPLETED_ERROR:=Ini.ReadString('Main', 'ID_COMPLETED_ERROR', '');
-	ID_BACKUP_COMPLETED:=Ini.ReadString('Main', 'ID_BACKUP_COMPLETED', '');
-	ID_CHECK_FILES:=Ini.ReadString('Main', 'ID_CHECK_FILES', '');
-	ID_TOTAL_OPERATIONS:=Ini.ReadString('Main', 'ID_TOTAL_OPERATIONS', '');
-	ID_SUCCESS_COPY_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_COPY_FILES', '');
-	ID_SUCCESS_RENAME_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_RENAME_FILES', '');
-	ID_SUCCESS_REMOVE_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_REMOVE_FILES', '');
-	ID_SUCCESS_CREATE_FOLDERS:=Ini.ReadString('Main', 'ID_SUCCESS_CREATE_FOLDERS', '');
-	ID_SUCCESS_REMOVE_FOLDERS:=Ini.ReadString('Main', 'ID_SUCCESS_REMOVE_FOLDERS', '');
-	ID_FAIL_COPY_FILES:=Ini.ReadString('Main', 'ID_FAIL_COPY_FILES', '');
-	ID_FAIL_RENAME_FILES:=Ini.ReadString('Main', 'ID_FAIL_RENAME_FILES', '');
-	ID_FAIL_REMOVE_FILES:=Ini.ReadString('Main', 'ID_FAIL_REMOVE_FILES', '');
-	ID_FAIL_CREATE_FOLDERS:=Ini.ReadString('Main', 'ID_FAIL_CREATE_FOLDERS', '');
-	ID_FAIL_REMOVE_FOLDERS:=Ini.ReadString('Main', 'ID_FAIL_REMOVE_FOLDERS', '');
-	ID_PERFORM_OPERATIONS:=Ini.ReadString('Main', 'ID_PERFORM_OPERATIONS', '');
-	ID_ENTER_NAME_PARE_FOLDERS:=Ini.ReadString('Main', 'ID_ENTER_NAME_PARE_FOLDERS', '');
-	ID_CHOOSE_LEFT_FOLDER:=Ini.ReadString('Main', 'ID_CHOOSE_LEFT_FOLDER', '');
-	ID_CHOOSE_RIGHT_FOLDER:=Ini.ReadString('Main', 'ID_CHOOSE_RIGHT_FOLDER', '');
-	ID_CHOOSE_FOLDER_ERROR:=Ini.ReadString('Main', 'ID_CHOOSE_FOLDER_ERROR', '');
-	ID_SUCCESS_NOTIFICATION_MESSAGE:=Ini.ReadString('Main', 'ID_SUCCESS_NOTIFICATION_MESSAGE', '');
-	ID_FAIL_NOTIFICATION_MESSAGE:=Ini.ReadString('Main', 'ID_FAIL_NOTIFICATION_MESSAGE', '');
-	ID_ABOUT_TITLE:=Ini.ReadString('Main', 'ID_ABOUT_TITLE', '');
-	ID_LAST_UPDATE:=Ini.ReadString('Main', 'ID_LAST_UPDATE', '');
-	ID_EXCLUDE_TITLE:=Ini.ReadString('Main', 'ID_EXCLUDE_TITLE', '');
+  ID_FILE_RENAMED:=Ini.ReadString('Main', 'ID_FILE_RENAMED', '');
+  ID_FOUND_NEW_FILE:=Ini.ReadString('Main', 'ID_FOUND_NEW_FILE', '');
+  ID_FILE_UPDATED:=Ini.ReadString('Main', 'ID_FILE_UPDATED', '');
+  ID_FOUND_OLD_FILE:=Ini.ReadString('Main', 'ID_FOUND_OLD_FILE', '');
+  ID_COPY_FILE:=Ini.ReadString('Main', 'ID_COPY_FILE', '');
+  ID_RENAME_FILE:=Ini.ReadString('Main', 'ID_RENAME_FILE', '');
+  ID_REMOVE_FILE:=Ini.ReadString('Main', 'ID_REMOVE_FILE', '');
+  ID_CREATE_FOLDER:=Ini.ReadString('Main', 'ID_CREATE_FOLDER', '');
+  ID_REMOVE_FOLDER:=Ini.ReadString('Main', 'ID_REMOVE_FOLDER', '');
+  ID_COMPLETED:=Ini.ReadString('Main', 'ID_COMPLETED', '');
+  ID_COMPLETED_ERROR:=Ini.ReadString('Main', 'ID_COMPLETED_ERROR', '');
+  ID_BACKUP_COMPLETED:=Ini.ReadString('Main', 'ID_BACKUP_COMPLETED', '');
+  ID_CHECK_FILES:=Ini.ReadString('Main', 'ID_CHECK_FILES', '');
+  ID_TOTAL_OPERATIONS:=Ini.ReadString('Main', 'ID_TOTAL_OPERATIONS', '');
+  ID_SUCCESS_COPY_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_COPY_FILES', '');
+  ID_SUCCESS_RENAME_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_RENAME_FILES', '');
+  ID_SUCCESS_REMOVE_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_REMOVE_FILES', '');
+  ID_SUCCESS_CREATE_FOLDERS:=Ini.ReadString('Main', 'ID_SUCCESS_CREATE_FOLDERS', '');
+  ID_SUCCESS_REMOVE_FOLDERS:=Ini.ReadString('Main', 'ID_SUCCESS_REMOVE_FOLDERS', '');
+  ID_FAIL_COPY_FILES:=Ini.ReadString('Main', 'ID_FAIL_COPY_FILES', '');
+  ID_FAIL_RENAME_FILES:=Ini.ReadString('Main', 'ID_FAIL_RENAME_FILES', '');
+  ID_FAIL_REMOVE_FILES:=Ini.ReadString('Main', 'ID_FAIL_REMOVE_FILES', '');
+  ID_FAIL_CREATE_FOLDERS:=Ini.ReadString('Main', 'ID_FAIL_CREATE_FOLDERS', '');
+  ID_FAIL_REMOVE_FOLDERS:=Ini.ReadString('Main', 'ID_FAIL_REMOVE_FOLDERS', '');
+  ID_PERFORM_OPERATIONS:=Ini.ReadString('Main', 'ID_PERFORM_OPERATIONS', '');
+  ID_ENTER_NAME_PARE_FOLDERS:=Ini.ReadString('Main', 'ID_ENTER_NAME_PARE_FOLDERS', '');
+  ID_CHOOSE_LEFT_FOLDER:=Ini.ReadString('Main', 'ID_CHOOSE_LEFT_FOLDER', '');
+  ID_CHOOSE_RIGHT_FOLDER:=Ini.ReadString('Main', 'ID_CHOOSE_RIGHT_FOLDER', '');
+  ID_CHOOSE_FOLDER_ERROR:=Ini.ReadString('Main', 'ID_CHOOSE_FOLDER_ERROR', '');
+  ID_SUCCESS_NOTIFICATION_MESSAGE:=Ini.ReadString('Main', 'ID_SUCCESS_NOTIFICATION_MESSAGE', '');
+  ID_FAIL_NOTIFICATION_MESSAGE:=Ini.ReadString('Main', 'ID_FAIL_NOTIFICATION_MESSAGE', '');
+  ID_ABOUT_TITLE:=Ini.ReadString('Main', 'ID_ABOUT_TITLE', '');
+  ID_LAST_UPDATE:=Ini.ReadString('Main', 'ID_LAST_UPDATE', '');
+  ID_EXCLUDE_TITLE:=Ini.ReadString('Main', 'ID_EXCLUDE_TITLE', '');
   ID_SELECT_EXCLUDE_FOLDER:=Ini.ReadString('Main', 'ID_SELECT_EXCLUDE_FOLDER', '');
-	ID_OK:=Ini.ReadString('Main', 'ID_OK', '');
-	ID_CANCEL:=Ini.ReadString('Main', 'ID_CANCEL', '');
+  ID_OK:=Ini.ReadString('Main', 'ID_OK', '');
+  ID_CANCEL:=Ini.ReadString('Main', 'ID_CANCEL', '');
 
   Application.Title:=Caption;
 
