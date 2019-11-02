@@ -24,6 +24,7 @@ object ExcludeFoldersForm: TExcludeFoldersForm
     Align = alClient
     ItemHeight = 13
     TabOrder = 0
+    OnKeyDown = ListBoxKeyDown
   end
   object Panel: TPanel
     Left = 0

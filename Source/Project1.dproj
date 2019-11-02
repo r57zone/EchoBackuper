@@ -114,6 +114,10 @@
             <Form>ExcludeFoldersForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Unit3.pas">
+            <Form>LogsForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="Icon.ico">
             <ResourceType>ICON</ResourceType>
             <ResourceId>MainIcon</ResourceId>
@@ -144,13 +148,25 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="Icon.ico" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Project1.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Project1.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Icon.ico" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="Win32\Release\Project1.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>Project1.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Icon.ico" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

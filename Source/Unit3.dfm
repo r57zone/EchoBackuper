@@ -1,0 +1,31 @@
+object LogsForm: TLogsForm
+  Left = 0
+  Top = 0
+  ClientHeight = 231
+  ClientWidth = 399
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object LogsMemo: TMemo
+    Left = 0
+    Top = 0
+    Width = 399
+    Height = 231
+    Align = alClient
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 0
+    ExplicitLeft = 192
+    ExplicitTop = 88
+    ExplicitWidth = 185
+    ExplicitHeight = 89
+  end
+end

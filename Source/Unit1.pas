@@ -29,11 +29,13 @@ type
     procedure StopBtnClick(Sender: TObject);
     procedure AboutBtnClick(Sender: TObject);
     procedure CBCheckLogClick(Sender: TObject);
+    procedure ListViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
-    procedure LoadPairFolders(FileName: string);
-    procedure SavePairFolders;
+    procedure LoadBackupPaths(FileName: string);
     { Private declarations }
   public
+    procedure SaveBackupPaths;
     function BrowseFolderDialog(Title: PChar): string;
     { Public declarations }
   end;
@@ -41,6 +43,7 @@ type
 var
   Main: TMain;
   Actions, ExcludePaths, ExcludeRenameFiles: TStringList;
+  CurrentBackupFilePath: string; //Текущий файл путей для резервной копии
   FilesCounter, ActionGoodCounter, GoodCopyFilesCounter, GoodRenameFilesCounter, GoodDeleteFilesCounter, GoodMakeFoldersCounter, GoodRemoveFoldersCounter,
   BadCopyFilesCounter, BadRenameFilesCounter, BadDeleteFilesCounter, BadMakeFoldersCounter, BadRemoveFoldersCounter: integer;
   StopRequest: boolean;
@@ -59,11 +62,18 @@ var
   ID_ABOUT_TITLE, ID_LAST_UPDATE: string;
   ID_EXCLUDE_TITLE, ID_SELECT_EXCLUDE_FOLDER, ID_OK, ID_CANCEL: string;
 
+const
+  //Название файла путей для резеревной копии по умолчанию
+  BACKUP_PATHS_FILE_NAME = 'BackupPaths.txt';
+  //Зарезервированные фразы для файла
+  PAIR_FOLDERS_FILE = 'PAIR FOLDERS:';
+  EXCLUDE_PATHS_FILE = 'EXCLUDE PATHS:';
+
 implementation
 
 {$R *.dfm}
 
-uses Unit2;
+uses Unit2, Unit3;
 
 { TMain }
 
@@ -312,7 +322,7 @@ end;
 
 procedure TMain.FormCreate(Sender: TObject);
 var
-  Ini: TIniFile; i: integer; CustomPairFolders, CustomExludeFolders: string;
+  Ini: TIniFile; i: integer; CustomBackupFile: string;
 const
   ParamSilent = '/silent';
 begin
@@ -379,31 +389,21 @@ begin
   Application.Title:=Caption;
 
   for i:=1 to ParamCount do begin
-    if ParamStr(i) = '-p' then
-      CustomPairFolders:=ParamStr(i + 1);
-    if ParamStr(i) = '-e' then
-      CustomExludeFolders:=ParamStr(i + 1);
+    if ParamStr(i) = '-b' then
+      CustomBackupFile:=ParamStr(i + 1);
     if ParamStr(i) = ParamSilent then
       SilentMode:=true;
   end;
 
-  if CustomPairFolders = '' then
-    LoadPairFolders(ExtractFilePath(ParamStr(0)) + 'PairFolders.txt')
+  ExcludePaths:=TStringList.Create; //Создаём до загрузки путей для исключения
+
+  if CustomBackupFile = '' then
+    LoadBackupPaths(ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME)
   else
-    LoadPairFolders(ExtractFilePath(ParamStr(0)) + CustomPairFolders);
+    LoadBackupPaths(ExtractFilePath(ParamStr(0)) + CustomBackupFile);
 
   Actions:=TStringList.Create;
-  ExcludePaths:=TStringList.Create;
   ExcludeRenameFiles:=TStringList.Create;
-
-  if CustomExludeFolders = '' then
-    CustomExludeFolders:=ExtractFilePath(ParamStr(0)) + 'ExcludePaths.txt';
-
-  if FileExists(CustomExludeFolders) then
-      ExcludePaths.LoadFromFile(CustomExludeFolders);
-
-  if FileExists(ExtractFilePath(ParamStr(0)) + 'log.txt') then
-    DeleteFile(ExtractFilePath(ParamStr(0)) + 'log.txt');
 
   if SilentMode then begin
     NotificationApp:=GetNotificationAppPath;
@@ -458,8 +458,8 @@ begin
     //Подтверждение выполнения операций
     if CBCheckLog.Checked then begin
       if Actions.Count > 0 then begin
-        Actions.SaveToFile(ExtractFilePath(ParamStr(0)) + 'log.txt');
-        ShellExecute(0, 'open', PChar(ExtractFilePath(ParamStr(0)) + 'log.txt'), nil, nil, SW_SHOWNORMAL);
+        LogsForm.Show;
+        LogsForm.LogsMemo.Text:=Actions.Text;
         case MessageBox(Handle, PChar(ID_PERFORM_OPERATIONS), PChar(Caption), 35) of
           6: ActionsRun;
         end;
@@ -498,7 +498,7 @@ begin
                                  ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
                                  ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
                                  ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
-                          PChar(Caption), MB_ICONINFORMATION)
+                            PChar(Caption), MB_ICONINFORMATION)
   else if Trim(NotificationApp) <> '' then begin
 
     if (BadCopyFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
@@ -540,42 +540,70 @@ begin
   Ini.Free;
 end;
 
-procedure TMain.LoadPairFolders(FileName: string);
+procedure TMain.LoadBackupPaths(FileName: string);
 var
   i: integer;
-  Item: TListItem; PairFolders: TStringList; Str: string;
+  Item: TListItem; BackupPaths: TStringList; Str: string;
+  LoadExcludePaths: boolean;
 begin
-  PairFolders:=TStringList.Create;
-  if FileExists(ExtractFilePath(ParamStr(0)) + 'PairFolders.txt') then
-    PairFolders.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'PairFolders.txt');
-  for i:=0 to PairFolders.Count - 1 do begin
-    Str:=PairFolders.Strings[i];
-    Item:=Main.ListView.Items.Add;
-    Item.Caption:='';
-    Item.SubItems.Add(Copy(Str, 1, Pos(#9, Str) - 1));
-    Delete(Str, 1, Pos(#9, Str));
-    Item.SubItems.Add(Copy(Str, 1, Pos(#9, Str) - 1));
-    Delete(Str, 1, Pos(#9, Str));
-    Item.SubItems.Add(Str);
-    Item.Checked:=true;
+
+  BackupPaths:=TStringList.Create;
+  LoadExcludePaths:=false;
+
+  if FileExists(FileName) then begin
+    BackupPaths.LoadFromFile(FileName);
+
+    //Сохраняем текущий путь для сохранения
+    CurrentBackupFilePath:=FileName;
+  end else
+    //Если файл не найден, то записываем дефолтный путь
+    CurrentBackupFilePath:=ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME;
+
+
+  for i:=1 to BackupPaths.Count - 1 do begin //Первая строка зарезервирована под "PAIR FOLDERS:"
+    if BackupPaths.Strings[i] = EXCLUDE_PATHS_FILE then begin
+      LoadExcludePaths:=true;
+      Continue;
+    end;
+
+    if LoadExcludePaths = false then begin
+      Str:=BackupPaths.Strings[i];
+      Item:=Main.ListView.Items.Add;
+      Item.Caption:='';
+      Item.SubItems.Add(Copy(Str, 1, Pos(#9, Str) - 1));
+      Delete(Str, 1, Pos(#9, Str));
+      Item.SubItems.Add(Copy(Str, 1, Pos(#9, Str) - 1));
+      Delete(Str, 1, Pos(#9, Str));
+      Item.SubItems.Add(Str);
+      Item.Checked:=true;
+    end else
+      if Trim(BackupPaths.Strings[i]) <> '' then
+        ExcludePaths.Add(BackupPaths.Strings[i]);
   end;
-  PairFolders.Free;
+  BackupPaths.Free;
 end;
 
-procedure TMain.SavePairFolders;
+procedure TMain.SaveBackupPaths;
 var
   i: integer;
   Item: TListItem;
-  PairFolders: TStringList;
+  BackupPaths: TStringList;
 begin
-  PairFolders:=TStringList.Create;
+  BackupPaths:=TStringList.Create;
+
+  //Добавляем связанные папки
+  BackupPaths.Add(PAIR_FOLDERS_FILE);
   for i:=0 to ListView.Items.Count - 1 do begin
     Item:=ListView.Items.Item[i];
-    PairFolders.Add(Item.SubItems[0]+ #9 + Item.SubItems[1] + #9 + Item.SubItems[2]);
+    BackupPaths.Add(Item.SubItems[0]+ #9 + Item.SubItems[1] + #9 + Item.SubItems[2]);
   end;
 
-  PairFolders.SaveToFile(ExtractFilePath(ParamStr(0)) + 'PairFolders.txt');
-  PairFolders.Free;
+  //Добавляем исключённые пути
+  BackupPaths.Add(EXCLUDE_PATHS_FILE);
+  BackupPaths.Add(Trim(ExcludePaths.Text));
+
+  BackupPaths.SaveToFile(CurrentBackupFilePath); //Сохраняем в текущий открытый файл
+  BackupPaths.Free;
 end;
 
 procedure TMain.AddBtnClick(Sender: TObject);
@@ -605,14 +633,14 @@ begin
   end else
     Application.MessageBox(PChar(ID_CHOOSE_FOLDER_ERROR), PChar(Caption), MB_ICONERROR);
 
-  SavePairFolders;
+  SaveBackupPaths;
 end;
 
 procedure TMain.RemBtnClick(Sender: TObject);
 begin
   if ListView.ItemIndex <> -1 then begin
     ListView.DeleteSelected;
-    SavePairFolders;
+    SaveBackupPaths;
   end;
 end;
 
@@ -623,6 +651,15 @@ begin
   if ListView.ItemIndex <> -1 then begin
     Item:=ListView.Items.Item[ListView.ItemIndex];
     Application.MessageBox(PChar(ListView.Columns[2].Caption + ': ' + Item.SubItems[1] + #13#10 + ListView.Columns[3].Caption + ': ' + Item.SubItems[2]), PChar(Item.SubItems[0]), MB_ICONINFORMATION);
+  end;
+end;
+
+procedure TMain.ListViewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then begin
+    RemBtn.Click;
+    SaveBackupPaths;
   end;
 end;
 
@@ -640,8 +677,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.5.5' + #13#10 +
-  ID_LAST_UPDATE + ' 25.09.2019' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.5.6' + #13#10 +
+  ID_LAST_UPDATE + ' 02.11.2019' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

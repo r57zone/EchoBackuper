@@ -19,6 +19,8 @@ type
     procedure OKBtnClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure ListBoxKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -52,7 +54,7 @@ end;
 procedure TExcludeFoldersForm.OKBtnClick(Sender: TObject);
 begin
   ExcludePaths.Text:=ListBox.Items.Text;
-  ExcludePaths.SaveToFile(ExtractFilePath(ParamStr(0)) + 'ExludePaths.txt');
+  Main.SaveBackupPaths;
   Close;
 end;
 
@@ -69,6 +71,15 @@ begin
   AddBtn.Caption:=Main.AddBtn.Caption;
   RemBtn.Caption:=Main.RemBtn.Caption;
   CancelBtn.Caption:=ID_CANCEL;
+end;
+
+procedure TExcludeFoldersForm.ListBoxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then begin
+    RemBtn.Click;
+    Main.SaveBackupPaths;
+  end;
 end;
 
 end.

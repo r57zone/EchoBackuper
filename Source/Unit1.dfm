@@ -63,6 +63,7 @@ object Main: TMain
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = ListViewDblClick
+    OnKeyDown = ListViewKeyDown
   end
   object AddBtn: TButton
     Left = 88
