@@ -4,13 +4,11 @@
 Application for backups. Backups are created using the echo principle. New and updated files are copied from the original folder to the backup folder. Renames and deletes of files occurs only in the backup.
 
 ## Silent Mode
->EchoBackaper.exe -p "SilentPairFolders.txt" -e "SilentExcludeFolders.txt" /silent
+>EchoBackaper.exe -b "BackupPaths.txt" -s
 
-**"-p <file>"** - load a different list of pair folders.
+**"-b <file>"** - load a different list of pair and exclude folders.
 
-**"-e <file>"** - load a different list of exclude folders.
-
-**"/silent"** - silent mode with final notification. For notifications need to download the application ["Notifications"](https://github.com/r57zone/notifications), unpack to "Program Files" and run 1 time.
+**"-s"** - silent mode with final notification. For notifications need to download the application ["Notifications"](https://github.com/r57zone/notifications), unpack to "Program Files" and run 1 time.
 
 ![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
 

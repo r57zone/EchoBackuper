@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, ShellAPI, ShlObj, Registry,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, ShlObj, Registry,
   IniFiles;
 
 type
@@ -323,8 +323,6 @@ end;
 procedure TMain.FormCreate(Sender: TObject);
 var
   Ini: TIniFile; i: integer; CustomBackupFile: string;
-const
-  ParamSilent = '/silent';
 begin
   Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Config.ini');
   CBCheckLog.Checked:=Ini.ReadBool('Main', 'LookTasks', true);
@@ -391,7 +389,7 @@ begin
   for i:=1 to ParamCount do begin
     if ParamStr(i) = '-b' then
       CustomBackupFile:=ParamStr(i + 1);
-    if ParamStr(i) = ParamSilent then
+    if ParamStr(i) = '-s' then
       SilentMode:=true;
   end;
 

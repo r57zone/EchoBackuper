@@ -1,8 +1,8 @@
 object LogsForm: TLogsForm
   Left = 0
   Top = 0
-  ClientHeight = 231
-  ClientWidth = 399
+  ClientHeight = 230
+  ClientWidth = 400
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,15 +17,13 @@ object LogsForm: TLogsForm
   object LogsMemo: TMemo
     Left = 0
     Top = 0
-    Width = 399
-    Height = 231
+    Width = 400
+    Height = 230
     Align = alClient
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 0
-    ExplicitLeft = 192
-    ExplicitTop = 88
-    ExplicitWidth = 185
-    ExplicitHeight = 89
+    ExplicitWidth = 399
+    ExplicitHeight = 231
   end
 end
