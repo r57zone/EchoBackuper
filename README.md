@@ -6,9 +6,9 @@ Application for backups. Backups are created using the echo principle. New and u
 ## Silent Mode
 >EchoBackaper.exe -b "BackupPaths.txt" -s
 
-**"-b backup_ext_hdd.txt"** - load a different list of pair and exclude folders.
+"**-b** backup_ext_hdd.txt" - load a different list of pair and exclude folders.
 
-**"-s"** - silent mode with final notification. For notifications need to download the application ["Notifications"](https://github.com/r57zone/notifications), unpack to "Program Files" and run 1 time.
+"**-s**" - silent mode with final notification. For notifications need to download the application ["Notifications"](https://github.com/r57zone/notifications), unpack to "Program Files" and run 1 time.
 
 ![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
 
