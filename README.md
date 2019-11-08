@@ -13,7 +13,7 @@ Application for backups. Backups are created using the echo principle. New and u
 ![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
 
 ## Screenshots
-![](https://user-images.githubusercontent.com/9499881/65593907-94767d00-dfa2-11e9-8873-6308d5e6e127.png)
+![](https://user-images.githubusercontent.com/9499881/68482602-5fbd3d00-0253-11ea-9b65-9830fcda9c04.png)
 
 ![](https://user-images.githubusercontent.com/9499881/65594220-5e85c880-dfa3-11e9-87c8-9b5648893299.png)
 

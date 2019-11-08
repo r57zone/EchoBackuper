@@ -342,6 +342,7 @@ begin
   AddBtn.Caption:=Ini.ReadString('Main', 'ID_ADD', '');
   RemBtn.Caption:=Ini.ReadString('Main', 'ID_REMOVE', '');
   ExcludeBtn.Caption:=Ini.ReadString('Main', 'ID_EXCLUDE', '');
+  StopBtn.Caption:=Ini.ReadString('Main', 'ID_STOP', '');
   CBCheckLog.Caption:=Ini.ReadString('Main', 'ID_VIEW_TASKS', '');
 
   ID_LOOKING_CHANGES:=Ini.ReadString('Main', 'ID_LOOKING_CHANGES', '');
