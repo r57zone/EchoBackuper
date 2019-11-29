@@ -52,7 +52,7 @@ var
 
   ID_LOOKING_CHANGES, ID_FILE_RENAMED, ID_FOUND_NEW_FILE, ID_FILE_UPDATED, ID_FOUND_OLD_FILE,
   ID_COPY_FILE, ID_RENAME_FILE, ID_REMOVE_FILE, ID_CREATE_FOLDER, ID_REMOVE_FOLDER: string;
-  ID_COMPLETED, ID_COMPLETED_ERROR, ID_BACKUP_COMPLETED, ID_CHECK_FILES, ID_TOTAL_OPERATIONS,
+  ID_COMPLETED, ID_COMPLETED_ERROR, ID_BACKUP_COMPLETED, ID_BACKUP_FAILED, ID_CHECK_FILES, ID_TOTAL_OPERATIONS,
   ID_SUCCESS_COPY_FILES, ID_SUCCESS_RENAME_FILES, ID_SUCCESS_REMOVE_FILES,
   ID_SUCCESS_CREATE_FOLDERS, ID_SUCCESS_REMOVE_FOLDERS, ID_FAIL_COPY_FILES, ID_FAIL_RENAME_FILES,
   ID_FAIL_REMOVE_FILES, ID_FAIL_CREATE_FOLDERS, ID_FAIL_REMOVE_FOLDERS: string;
@@ -127,7 +127,7 @@ begin
           repeat
             Application.ProcessMessages;
 
-            //Если время файла или размер совпадает и такого файла нет в первичной папке, то переименовываем файл во вторичной папке
+            //Если время файла, размер совпадает и такого файла нет в первичной папке, то переименовываем файл во вторичной папке
             //Файл переименован
             if (LocalFile.Time = RemoteFile.Time) and (LocalFile.Size = RemoteFile.Size) and (FileExists(LocalFolder + RemoteFile.Name) = false) then begin
               Actions.Add('RENAME ' + RemoteFolder + RemoteFile.Name + #9 + RemoteFolder + LocalFile.Name);
@@ -358,6 +358,7 @@ begin
   ID_COMPLETED:=Ini.ReadString('Main', 'ID_COMPLETED', '');
   ID_COMPLETED_ERROR:=Ini.ReadString('Main', 'ID_COMPLETED_ERROR', '');
   ID_BACKUP_COMPLETED:=Ini.ReadString('Main', 'ID_BACKUP_COMPLETED', '');
+  ID_BACKUP_FAILED:=Ini.ReadString('Main', 'ID_BACKUP_FAILED', '');
   ID_CHECK_FILES:=Ini.ReadString('Main', 'ID_CHECK_FILES', '');
   ID_TOTAL_OPERATIONS:=Ini.ReadString('Main', 'ID_TOTAL_OPERATIONS', '');
   ID_SUCCESS_COPY_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_COPY_FILES', '');
@@ -457,11 +458,22 @@ begin
     //Подтверждение выполнения операций
     if CBCheckLog.Checked then begin
       if Actions.Count > 0 then begin
+
+        //Показываем логи
         LogsForm.Show;
         LogsForm.LogsMemo.Text:=Actions.Text;
+
+        //Подтверждение операции
         case MessageBox(Handle, PChar(ID_PERFORM_OPERATIONS), PChar(Caption), 35) of
-          6: ActionsRun;
+          6:begin
+              //Если окно не закрыто, то закрываем его
+              if LogsForm.Showing then
+                LogsForm.Close;
+              ActionsRun;
+            end;
+
         end;
+
       end;
     end else
       if Actions.Count > 0 then begin
@@ -483,22 +495,40 @@ begin
   RunBtn.Enabled:=true;
   StopBtn.Enabled:=false;
 
-  if SilentMode = false then
-    Application.MessageBox(PChar(ID_BACKUP_COMPLETED + #13#10 + #13#10 +
-                                 ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 +
-                                 ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + #13#10 +
-                                 ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10 +
-                                 ID_SUCCESS_RENAME_FILES + ' ' + IntToStr(GoodRenameFilesCounter) + #13#10 +
-                                 ID_SUCCESS_REMOVE_FILES + ' ' + IntToStr(GoodDeleteFilesCounter) + #13#10 +
-                                 ID_SUCCESS_CREATE_FOLDERS + ' ' + IntToStr(GoodMakeFoldersCounter) + #13#10 +
-                                 ID_SUCCESS_REMOVE_FOLDERS + ' ' + IntToStr(GoodRemoveFoldersCounter) + #13#10 +
-                                 ID_FAIL_COPY_FILES + ' ' + IntToStr(BadCopyFilesCounter) + #13#10 +
-                                 ID_FAIL_RENAME_FILES + ' ' + IntToStr(BadRenameFilesCounter) + #13#10 +
-                                 ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
-                                 ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
-                                 ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
-                            PChar(Caption), MB_ICONINFORMATION)
-  else if Trim(NotificationApp) <> '' then begin
+  if SilentMode = false then begin
+
+    if (BadCopyFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
+      Application.MessageBox(PChar(ID_BACKUP_COMPLETED + #13#10 + #13#10 +
+                                   ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 +
+                                   ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + #13#10 +
+                                   ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10 +
+                                   ID_SUCCESS_RENAME_FILES + ' ' + IntToStr(GoodRenameFilesCounter) + #13#10 +
+                                   ID_SUCCESS_REMOVE_FILES + ' ' + IntToStr(GoodDeleteFilesCounter) + #13#10 +
+                                   ID_SUCCESS_CREATE_FOLDERS + ' ' + IntToStr(GoodMakeFoldersCounter) + #13#10 +
+                                   ID_SUCCESS_REMOVE_FOLDERS + ' ' + IntToStr(GoodRemoveFoldersCounter) + #13#10 +
+                                   ID_FAIL_COPY_FILES + ' ' + IntToStr(BadCopyFilesCounter) + #13#10 +
+                                   ID_FAIL_RENAME_FILES + ' ' + IntToStr(BadRenameFilesCounter) + #13#10 +
+                                   ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
+                                   ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
+                                   ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
+                              PChar(Caption), MB_ICONINFORMATION)
+    else
+      Application.MessageBox(PChar(ID_BACKUP_FAILED + #13#10 + #13#10 +
+                                   ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 +
+                                   ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + #13#10 +
+                                   ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10 +
+                                   ID_SUCCESS_RENAME_FILES + ' ' + IntToStr(GoodRenameFilesCounter) + #13#10 +
+                                   ID_SUCCESS_REMOVE_FILES + ' ' + IntToStr(GoodDeleteFilesCounter) + #13#10 +
+                                   ID_SUCCESS_CREATE_FOLDERS + ' ' + IntToStr(GoodMakeFoldersCounter) + #13#10 +
+                                   ID_SUCCESS_REMOVE_FOLDERS + ' ' + IntToStr(GoodRemoveFoldersCounter) + #13#10 +
+                                   ID_FAIL_COPY_FILES + ' ' + IntToStr(BadCopyFilesCounter) + #13#10 +
+                                   ID_FAIL_RENAME_FILES + ' ' + IntToStr(BadRenameFilesCounter) + #13#10 +
+                                   ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
+                                   ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
+                                   ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
+                              PChar(Caption), MB_ICONINFORMATION);
+
+  end else if Trim(NotificationApp) <> '' then begin
 
     if (BadCopyFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
       WinExec(PAnsiChar(NotificationApp + ' -t "' + Caption + '" -d "' + ID_SUCCESS_NOTIFICATION_MESSAGE + '" -b EchoBackaper.png -c 1'), SW_SHOWNORMAL)
@@ -676,8 +706,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.5.6' + #13#10 +
-  ID_LAST_UPDATE + ' 02.11.2019' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.5.7' + #13#10 +
+  ID_LAST_UPDATE + ' 29.11.2019' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
