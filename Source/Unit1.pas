@@ -19,6 +19,10 @@ type
     CBCheckLog: TCheckBox;
     ExcludeBtn: TButton;
     StopBtn: TButton;
+    OpenBtn: TButton;
+    OpenDialog: TOpenDialog;
+    CreateBtn: TButton;
+    SaveDialog: TSaveDialog;
     procedure FormCreate(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
     procedure AddBtnClick(Sender: TObject);
@@ -31,6 +35,8 @@ type
     procedure CBCheckLogClick(Sender: TObject);
     procedure ListViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure OpenBtnClick(Sender: TObject);
+    procedure CreateBtnClick(Sender: TObject);
   private
     procedure LoadBackupPaths(FileName: string);
     { Private declarations }
@@ -64,7 +70,7 @@ var
 
 const
   //Название файла путей для резеревной копии по умолчанию
-  BACKUP_PATHS_FILE_NAME = 'BackupPaths.txt';
+  BACKUP_PATHS_FILE_NAME = 'BackupPaths.ebp';
   //Зарезервированные фразы для файла
   PAIR_FOLDERS_FILE = 'PAIR FOLDERS:';
   EXCLUDE_PATHS_FILE = 'EXCLUDE PATHS:';
@@ -338,6 +344,8 @@ begin
   ListView.Columns[1].Caption:=Ini.ReadString('Main', 'ID_NAME', '');
   ListView.Columns[2].Caption:=Ini.ReadString('Main', 'ID_LEFT_FOLDER', '');
   ListView.Columns[3].Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
+  CreateBtn.Caption:=Ini.ReadString('Main', 'ID_CREATE', '');
+  OpenBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
   RunBtn.Caption:=Ini.ReadString('Main', 'ID_RUN', '');
   AddBtn.Caption:=Ini.ReadString('Main', 'ID_ADD', '');
   RemBtn.Caption:=Ini.ReadString('Main', 'ID_REMOVE', '');
@@ -426,7 +434,12 @@ var
 begin
   StopRequest:=false;
   ProgressBar.Position:=0;
+  CreateBtn.Enabled:=false;
+  OpenBtn.Enabled:=false;
   RunBtn.Enabled:=false;
+  AddBtn.Enabled:=false;
+  RemBtn.Enabled:=false;
+  ExcludeBtn.Enabled:=false;
   StopBtn.Enabled:=true;
   FilesCounter:=0;
   ActionGoodCounter:=0;
@@ -493,6 +506,13 @@ begin
   end;
 
   RunBtn.Enabled:=true;
+  CreateBtn.Enabled:=true;
+  OpenBtn.Enabled:=true;
+  RunBtn.Enabled:=true;
+  AddBtn.Enabled:=true;
+  RemBtn.Enabled:=true;
+  ExcludeBtn.Enabled:=true;
+
   StopBtn.Enabled:=false;
 
   if SilentMode = false then begin
@@ -560,6 +580,12 @@ begin
   end;
 end;
 
+procedure TMain.OpenBtnClick(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+    LoadBackupPaths(OpenDialog.FileName);
+end;
+
 procedure TMain.CBCheckLogClick(Sender: TObject);
 var
   Ini: TIniFile;
@@ -569,12 +595,25 @@ begin
   Ini.Free;
 end;
 
+procedure TMain.CreateBtnClick(Sender: TObject);
+begin
+  if SaveDialog.Execute then begin
+    CurrentBackupFilePath:=SaveDialog.FileName;
+    //Очищаем текущие пути
+    ListView.Clear;
+    ExcludePaths.Clear;
+  end;
+end;
+
 procedure TMain.LoadBackupPaths(FileName: string);
 var
   i: integer;
   Item: TListItem; BackupPaths: TStringList; Str: string;
   LoadExcludePaths: boolean;
 begin
+  //Очищаем текущие пути
+  ListView.Clear;
+  ExcludePaths.Clear;
 
   BackupPaths:=TStringList.Create;
   LoadExcludePaths:=false;
@@ -585,7 +624,7 @@ begin
     //Сохраняем текущий путь для сохранения
     CurrentBackupFilePath:=FileName;
   end else
-    //Если файл не найден, то записываем дефолтный путь
+    //Если файл не найден, то читаем дефолтный путь
     CurrentBackupFilePath:=ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME;
 
 
@@ -706,8 +745,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.5.7' + #13#10 +
-  ID_LAST_UPDATE + ' 29.11.2019' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.5.8' + #13#10 +
+  ID_LAST_UPDATE + ' 02.01.2020' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

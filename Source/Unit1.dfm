@@ -5,7 +5,7 @@ object Main: TMain
   BorderStyle = bsSingle
   Caption = 'EchoBackaper'
   ClientHeight = 332
-  ClientWidth = 537
+  ClientWidth = 580
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,14 +21,14 @@ object Main: TMain
   object StatusBar: TStatusBar
     Left = 0
     Top = 313
-    Width = 537
+    Width = 580
     Height = 19
     Panels = <>
     SimplePanel = True
   end
   object RunBtn: TButton
-    Left = 8
-    Top = 232
+    Left = 7
+    Top = 233
     Width = 75
     Height = 25
     Caption = #1047#1072#1087#1091#1089#1090#1080#1090#1100
@@ -38,7 +38,7 @@ object Main: TMain
   object ListView: TListView
     Left = 8
     Top = 8
-    Width = 521
+    Width = 564
     Height = 217
     Checkboxes = True
     Columns = <
@@ -66,67 +66,96 @@ object Main: TMain
     OnKeyDown = ListViewKeyDown
   end
   object AddBtn: TButton
-    Left = 88
-    Top = 232
+    Left = 238
+    Top = 233
     Width = 75
     Height = 25
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100
-    TabOrder = 2
+    TabOrder = 4
     OnClick = AddBtnClick
   end
   object ProgressBar: TProgressBar
     Left = 8
     Top = 288
-    Width = 521
+    Width = 564
     Height = 17
-    TabOrder = 9
+    TabOrder = 11
   end
   object RemBtn: TButton
-    Left = 167
-    Top = 231
+    Left = 315
+    Top = 233
     Width = 75
     Height = 25
     Caption = #1059#1076#1072#1083#1080#1090#1100
-    TabOrder = 3
+    TabOrder = 5
     OnClick = RemBtnClick
   end
   object AboutBtn: TButton
-    Left = 504
-    Top = 232
+    Left = 546
+    Top = 233
     Width = 27
     Height = 25
     Caption = '?'
-    TabOrder = 7
+    TabOrder = 9
     OnClick = AboutBtnClick
   end
   object CBCheckLog: TCheckBox
     Left = 8
     Top = 264
-    Width = 209
+    Width = 301
     Height = 17
     Caption = #1055#1088#1086#1089#1084#1086#1090#1088' '#1079#1072#1076#1072#1095' '#1087#1077#1088#1077#1076' '#1086#1087#1077#1088#1072#1094#1080#1103#1084#1080
     Checked = True
     State = cbChecked
-    TabOrder = 6
+    TabOrder = 8
     OnClick = CBCheckLogClick
   end
   object ExcludeBtn: TButton
-    Left = 248
-    Top = 231
+    Left = 392
+    Top = 233
     Width = 75
     Height = 25
     Caption = #1048#1089#1082#1083#1102#1095#1080#1090#1100
-    TabOrder = 4
+    TabOrder = 6
     OnClick = ExcludeBtnClick
   end
   object StopBtn: TButton
-    Left = 328
-    Top = 232
+    Left = 469
+    Top = 233
     Width = 75
     Height = 25
     Caption = #1054#1089#1090#1072#1085#1086#1074#1080#1090#1100
     Enabled = False
-    TabOrder = 5
+    TabOrder = 7
     OnClick = StopBtnClick
+  end
+  object OpenBtn: TButton
+    Left = 161
+    Top = 233
+    Width = 75
+    Height = 25
+    Caption = #1054#1090#1082#1088#1099#1090#1100
+    TabOrder = 3
+    OnClick = OpenBtnClick
+  end
+  object CreateBtn: TButton
+    Left = 84
+    Top = 233
+    Width = 75
+    Height = 25
+    Caption = #1057#1086#1079#1076#1072#1090#1100
+    TabOrder = 2
+    OnClick = CreateBtnClick
+  end
+  object OpenDialog: TOpenDialog
+    Filter = 'Backup paths|*.ebp'
+    Left = 32
+    Top = 40
+  end
+  object SaveDialog: TSaveDialog
+    DefaultExt = 'Backup paths|*.ebp'
+    Filter = 'Backup paths|*.ebp'
+    Left = 96
+    Top = 40
   end
 end
