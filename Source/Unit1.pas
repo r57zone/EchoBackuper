@@ -119,58 +119,65 @@ begin
   repeat
     Application.ProcessMessages;
 
-    if (LocalFile.Name <> '.') and (LocalFile.Name <> '..') then
-      if (LocalFile.Attr and faDirectory) <> faDirectory then begin
+    if (LocalFile.Name = '.') or (LocalFile.Name = '..') then Continue;   //Не обрабатываем возвраты папок
 
-        Inc(FilesCounter);
+    //Проверка файлов
+    if (LocalFile.Attr and faDirectory) <> faDirectory then begin
 
-        //Если файл отсуствует, то копируем, а если во вторичной папке есть этот файл, то переименовываем
-        if not FileExists(RemoteFolder + LocalFile.Name) then begin
+      Inc(FilesCounter);
 
-          //Проверяем все файлы во вторичной папке, на случай если файл переименовали
-          FoundCurrentFile:=false;
-          if FindFirst(RemoteFolder + '*.*', faAnyFile, RemoteFile) = 0 then
-          repeat
-            Application.ProcessMessages;
+      //Если файл отсуствует, то копируем, а если во вторичной папке есть этот файл, то переименовываем
+      if not FileExists(RemoteFolder + LocalFile.Name) then begin
 
-            //Если время файла, размер совпадает и такого файла нет в первичной папке, то переименовываем файл во вторичной папке
-            //Файл переименован
-            if (LocalFile.Time = RemoteFile.Time) and (LocalFile.Size = RemoteFile.Size) and (FileExists(LocalFolder + RemoteFile.Name) = false) then begin
-              Actions.Add('RENAME ' + RemoteFolder + RemoteFile.Name + #9 + RemoteFolder + LocalFile.Name);
-              //Добавляем в список игнориемых файлов, чтобы он не удалился (до переименования)
-              ExcludeRenameFiles.Add(RemoteFolder + RemoteFile.Name);
-              StatusText(ID_FILE_RENAMED + ' ' + LocalFolder + LocalFile.Name);
-              FoundCurrentFile:=true;
-              Break;
-            end;
+        //Проверяем все файлы во вторичной папке, на случай если файл переименовали
+        FoundCurrentFile:=false;
+        if FindFirst(RemoteFolder + '*.*', faAnyFile, RemoteFile) = 0 then
+        repeat
+          Application.ProcessMessages;
 
-          until FindNext(RemoteFile) <> 0;
-          FindClose(RemoteFile);
-
-          //Если во вторичной папке схожих файлов не найдено, то просто копируем новый файл
-          //Найден новый файл
-          if FoundCurrentFile = false then begin
-            Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
-            StatusText(ID_FOUND_NEW_FILE + ' ' + LocalFolder + LocalFile.Name);
+          //Если время файла, размер совпадает и такого файла нет в первичной папке, то переименовываем файл во вторичной папке
+          //Файл переименован
+          if (LocalFile.Time = RemoteFile.Time) and (LocalFile.Size = RemoteFile.Size) and (FileExists(LocalFolder + RemoteFile.Name) = false) then begin
+            Actions.Add('RENAME ' + RemoteFolder + RemoteFile.Name + #9 + RemoteFolder + LocalFile.Name);
+            //Добавляем в список игнориемых файлов, чтобы он не удалился (до переименования)
+            ExcludeRenameFiles.Add(RemoteFolder + RemoteFile.Name);
+            StatusText(ID_FILE_RENAMED + ' ' + LocalFolder + LocalFile.Name);
+            FoundCurrentFile:=true;
+            Break;
           end;
 
-        //Если файл есть
-        end else if FindFirst(RemoteFolder + LocalFile.Name, faAnyFile, RemoteFile) = 0 then
+        until FindNext(RemoteFile) <> 0;
+        FindClose(RemoteFile);
 
-            //Если время файла или размер не совпадает, то копируем
-            //Файл обновлён
-            if (LocalFile.Time <> RemoteFile.Time) or (LocalFile.Size <> RemoteFile.Size) then begin
-              Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
-              StatusText(ID_FILE_UPDATED + ' ' + LocalFolder + LocalFile.Name);
-            end;
-
-            FindClose(RemoteFile);
-        end else begin
-           //Создаём папку если её не существует и её нет в списке игнорируемых
-          if (not DirectoryExists(RemoteFolder + LocalFile.Name)) and (Pos(LocalFolder + LocalFile.Name, ExcludePaths.Text) = 0) then
-            Actions.Add('MKDIR ' + RemoteFolder + LocalFile.Name);
-          CheckFilesDiff(LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name);
+        //Если во вторичной папке схожих файлов не найдено, то просто копируем новый файл
+        //Найден новый файл
+        if FoundCurrentFile = false then begin
+          Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
+          StatusText(ID_FOUND_NEW_FILE + ' ' + LocalFolder + LocalFile.Name);
         end;
+
+      //Если файл есть
+      end else if FindFirst(RemoteFolder + LocalFile.Name, faAnyFile, RemoteFile) = 0 then begin
+
+          //Если время файла или размер не совпадает, то копируем
+          //Файл обновлён
+          if (LocalFile.Time <> RemoteFile.Time) or (LocalFile.Size <> RemoteFile.Size) then begin
+            Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
+            StatusText(ID_FILE_UPDATED + ' ' + LocalFolder + LocalFile.Name);
+          end;
+
+          FindClose(RemoteFile);
+      end;
+
+    //Проверка папок
+    end else begin
+      //Создаём папку если её не существует и её нет в списке игнорируемых
+      if (not DirectoryExists(RemoteFolder + LocalFile.Name)) and (Pos(LocalFolder + LocalFile.Name, ExcludePaths.Text) = 0) then
+        Actions.Add('MKDIR ' + RemoteFolder + LocalFile.Name);
+
+      //Сравниваем файлы
+      CheckFilesDiff(LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name);
+    end;
 
   until FindNext(LocalFile) <> 0;
   FindClose(LocalFile);
@@ -344,9 +351,9 @@ begin
   ListView.Columns[1].Caption:=Ini.ReadString('Main', 'ID_NAME', '');
   ListView.Columns[2].Caption:=Ini.ReadString('Main', 'ID_LEFT_FOLDER', '');
   ListView.Columns[3].Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
+  RunBtn.Caption:=Ini.ReadString('Main', 'ID_RUN', '');
   CreateBtn.Caption:=Ini.ReadString('Main', 'ID_CREATE', '');
   OpenBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
-  RunBtn.Caption:=Ini.ReadString('Main', 'ID_RUN', '');
   AddBtn.Caption:=Ini.ReadString('Main', 'ID_ADD', '');
   RemBtn.Caption:=Ini.ReadString('Main', 'ID_REMOVE', '');
   ExcludeBtn.Caption:=Ini.ReadString('Main', 'ID_EXCLUDE', '');
@@ -434,9 +441,9 @@ var
 begin
   StopRequest:=false;
   ProgressBar.Position:=0;
+  RunBtn.Enabled:=false;
   CreateBtn.Enabled:=false;
   OpenBtn.Enabled:=false;
-  RunBtn.Enabled:=false;
   AddBtn.Enabled:=false;
   RemBtn.Enabled:=false;
   ExcludeBtn.Enabled:=false;
@@ -624,7 +631,7 @@ begin
     //Сохраняем текущий путь для сохранения
     CurrentBackupFilePath:=FileName;
   end else
-    //Если файл не найден, то читаем дефолтный путь
+    //Если файл не найден, то читаем дефолтный файл
     CurrentBackupFilePath:=ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME;
 
 
