@@ -592,7 +592,7 @@ begin
   end else
     if Actions.Count > 0 then ActionsRun;
 
-  if (BadCopyFilesCounter > 0) or (BadDeleteFilesCounter > 0) or (BadMakeFoldersCounter > 0) or (BadRemoveFoldersCounter > 0) then begin
+  if (BadCopyFilesCounter > 0) or (BadMoveFilesCounter = 0) or (BadDeleteFilesCounter > 0) or (BadMakeFoldersCounter > 0) or (BadRemoveFoldersCounter > 0) then begin
     ProgressBar.Position:=0;
     StatusText(ID_COMPLETED_ERROR);
   end else begin
