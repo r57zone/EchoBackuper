@@ -37,6 +37,7 @@ type
       Shift: TShiftState);
     procedure OpenBtnClick(Sender: TObject);
     procedure CreateBtnClick(Sender: TObject);
+    procedure CheckRemoteFilesToMove;
   private
     procedure LoadBackupPaths(FileName: string);
     { Private declarations }
@@ -50,17 +51,20 @@ var
   Main: TMain;
   Actions, ExcludePaths, ExcludeRenameFiles: TStringList;
   CurrentBackupFilePath: string; //Текущий файл путей для резервной копии
-  FilesCounter, ActionGoodCounter, GoodCopyFilesCounter, GoodRenameFilesCounter, GoodDeleteFilesCounter, GoodMakeFoldersCounter, GoodRemoveFoldersCounter,
-  BadCopyFilesCounter, BadRenameFilesCounter, BadDeleteFilesCounter, BadMakeFoldersCounter, BadRemoveFoldersCounter: integer;
+
+  FilesCounter, ActionGoodCounter, GoodCopyFilesCounter, GoodMoveFilesCounter, GoodRenameFilesCounter, GoodDeleteFilesCounter,
+  GoodMakeFoldersCounter, GoodRemoveFoldersCounter, BadCopyFilesCounter, BadMoveFilesCounter, BadRenameFilesCounter,
+  BadDeleteFilesCounter, BadMakeFoldersCounter, BadRemoveFoldersCounter: integer;
+
   StopRequest: boolean;
   SilentMode: boolean;
   NotificationApp: string;
 
   ID_LOOKING_CHANGES, ID_FILE_RENAMED, ID_FOUND_NEW_FILE, ID_FILE_UPDATED, ID_FOUND_OLD_FILE,
-  ID_COPY_FILE, ID_RENAME_FILE, ID_REMOVE_FILE, ID_CREATE_FOLDER, ID_REMOVE_FOLDER: string;
+  ID_COPY_FILE, ID_MOVE_FILE, ID_RENAME_FILE, ID_REMOVE_FILE, ID_CREATE_FOLDER, ID_REMOVE_FOLDER, ID_CHECK_MOVE_FILES: string;
   ID_COMPLETED, ID_COMPLETED_ERROR, ID_BACKUP_COMPLETED, ID_BACKUP_FAILED, ID_CHECK_FILES, ID_TOTAL_OPERATIONS,
-  ID_SUCCESS_COPY_FILES, ID_SUCCESS_RENAME_FILES, ID_SUCCESS_REMOVE_FILES,
-  ID_SUCCESS_CREATE_FOLDERS, ID_SUCCESS_REMOVE_FOLDERS, ID_FAIL_COPY_FILES, ID_FAIL_RENAME_FILES,
+  ID_SUCCESS_COPY_FILES, ID_SUCCESS_MOVE_FILES, ID_SUCCESS_RENAME_FILES, ID_SUCCESS_REMOVE_FILES,
+  ID_SUCCESS_CREATE_FOLDERS, ID_SUCCESS_REMOVE_FOLDERS, ID_FAIL_COPY_FILES, ID_FAIL_MOVE_FILES, ID_FAIL_RENAME_FILES,
   ID_FAIL_REMOVE_FILES, ID_FAIL_CREATE_FOLDERS, ID_FAIL_REMOVE_FOLDERS: string;
   ID_PERFORM_OPERATIONS, ID_ENTER_NAME_PARE_FOLDERS, ID_CHOOSE_LEFT_FOLDER,
   ID_CHOOSE_RIGHT_FOLDER, ID_CHOOSE_FOLDER_ERROR, ID_SUCCESS_NOTIFICATION_MESSAGE,
@@ -224,6 +228,66 @@ begin
   FindClose(RemoteFile);
 end;
 
+//Сравнение двух файлов на соотвествие, по дате и размеру
+function CompareFileIdentity(FirstFilePath, SecondFilePath: string): boolean;
+var
+  FirstFile, SecondFile: TSearchRec;
+begin
+  Result:=false;
+  if FindFirst(FirstFilePath, faAnyFile, FirstFile) = 0 then begin
+
+    if FindFirst(SecondFilePath, faAnyFile, SecondFile) = 0 then begin
+
+      if (FirstFile.Time = SecondFile.Time) and (FirstFile.Size = SecondFile.Size) then
+        Result:=true;
+
+      FindClose(SecondFile);
+    end;
+
+    FindClose(FirstFile);
+  end;
+end;
+
+procedure TMain.CheckRemoteFilesToMove; //Если файл был перемещён в другую папку, то перемещаем файл, а не удаляем и копируем снова
+var
+	i, j: integer;
+  ActionStr, DeleteFilePath, FirstCopyFilePath, SecondCopyFilePath: string;
+begin
+  if Actions.Count = 0 then Exit;
+  StatusText(ID_CHECK_MOVE_FILES);
+
+  for i:=0 to Actions.Count -1 do
+		if Copy(Actions.Strings[i], 1, 7) = 'DELETE ' then begin
+      ActionStr:=Actions.Strings[i];
+		  Delete(ActionStr, 1, 7);
+      DeleteFilePath:=ActionStr;
+
+			for j:=0 to Actions.Count - 1 do begin
+				if i = j then Continue; //Пропускаем DELETE
+
+        //Ищем копируемые файлы
+        if Copy(Actions.Strings[j], 1, 5) = 'COPY ' then begin
+          ActionStr:=Actions.Strings[j];
+          Delete(ActionStr, 1, 5);
+
+          FirstCopyFilePath:=Copy(ActionStr, 1, Pos(#9, ActionStr) - 1);
+          SecondCopyFilePath:=Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr));
+
+          //Проверка на соответствие файлов
+          if CompareFileIdentity(DeleteFilePath, FirstCopyFilePath) then begin
+            Actions.Strings[j]:='MOVE ' + DeleteFilePath + #9 + SecondCopyFilePath;
+            Actions.Strings[i]:='FIXED';
+            Break;
+          end;
+        end;
+
+			end;
+		end;
+
+  //Убираем исправленные действия
+  Actions.Text:=StringReplace(Actions.Text, 'FIXED' + #13#10, '', [rfReplaceAll]);
+end;
+
 procedure ActionsRun;
 var
   i: integer; ActionStr: string;
@@ -247,6 +311,21 @@ begin
           Inc(BadCopyFilesCounter);
       except
         Inc(BadCopyFilesCounter);
+      end;
+    end;
+
+    if Copy(Actions.Strings[i], 1, 5) = 'MOVE ' then begin
+      Delete(ActionStr, 1, 5);
+      try
+        StatusText(ID_MOVE_FILE + ' ' + Copy(ActionStr, 1, Pos(#9, ActionStr) - 1));
+        if MoveFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
+                     PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) ) then begin
+          Inc(GoodMoveFilesCounter);
+          Actions.Strings[i]:='';
+        end else
+          Inc(BadMoveFilesCounter);
+      except
+        Inc(BadMoveFilesCounter);
       end;
     end;
 
@@ -366,10 +445,12 @@ begin
   ID_FILE_UPDATED:=Ini.ReadString('Main', 'ID_FILE_UPDATED', '');
   ID_FOUND_OLD_FILE:=Ini.ReadString('Main', 'ID_FOUND_OLD_FILE', '');
   ID_COPY_FILE:=Ini.ReadString('Main', 'ID_COPY_FILE', '');
+  ID_MOVE_FILE:=Ini.ReadString('Main', 'ID_MOVE_FILE', '');
   ID_RENAME_FILE:=Ini.ReadString('Main', 'ID_RENAME_FILE', '');
   ID_REMOVE_FILE:=Ini.ReadString('Main', 'ID_REMOVE_FILE', '');
   ID_CREATE_FOLDER:=Ini.ReadString('Main', 'ID_CREATE_FOLDER', '');
   ID_REMOVE_FOLDER:=Ini.ReadString('Main', 'ID_REMOVE_FOLDER', '');
+  ID_CHECK_MOVE_FILES:=Ini.ReadString('Main', 'ID_CHECK_MOVE_FILES', '');
   ID_COMPLETED:=Ini.ReadString('Main', 'ID_COMPLETED', '');
   ID_COMPLETED_ERROR:=Ini.ReadString('Main', 'ID_COMPLETED_ERROR', '');
   ID_BACKUP_COMPLETED:=Ini.ReadString('Main', 'ID_BACKUP_COMPLETED', '');
@@ -377,11 +458,13 @@ begin
   ID_CHECK_FILES:=Ini.ReadString('Main', 'ID_CHECK_FILES', '');
   ID_TOTAL_OPERATIONS:=Ini.ReadString('Main', 'ID_TOTAL_OPERATIONS', '');
   ID_SUCCESS_COPY_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_COPY_FILES', '');
+  ID_SUCCESS_MOVE_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_MOVE_FILES', '');
   ID_SUCCESS_RENAME_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_RENAME_FILES', '');
   ID_SUCCESS_REMOVE_FILES:=Ini.ReadString('Main', 'ID_SUCCESS_REMOVE_FILES', '');
   ID_SUCCESS_CREATE_FOLDERS:=Ini.ReadString('Main', 'ID_SUCCESS_CREATE_FOLDERS', '');
   ID_SUCCESS_REMOVE_FOLDERS:=Ini.ReadString('Main', 'ID_SUCCESS_REMOVE_FOLDERS', '');
   ID_FAIL_COPY_FILES:=Ini.ReadString('Main', 'ID_FAIL_COPY_FILES', '');
+  ID_FAIL_MOVE_FILES:=Ini.ReadString('Main', 'ID_FAIL_MOVE_FILES', '');
   ID_FAIL_RENAME_FILES:=Ini.ReadString('Main', 'ID_FAIL_RENAME_FILES', '');
   ID_FAIL_REMOVE_FILES:=Ini.ReadString('Main', 'ID_FAIL_REMOVE_FILES', '');
   ID_FAIL_CREATE_FOLDERS:=Ini.ReadString('Main', 'ID_FAIL_CREATE_FOLDERS', '');
@@ -438,6 +521,8 @@ procedure TMain.RunBtnClick(Sender: TObject);
 var
   i: integer;
   Item: TListItem;
+
+  BackupStatusTitle: string;
 begin
   StopRequest:=false;
   ProgressBar.Position:=0;
@@ -451,11 +536,13 @@ begin
   FilesCounter:=0;
   ActionGoodCounter:=0;
   GoodCopyFilesCounter:=0;
+  GoodMoveFilesCounter:=0;
   GoodRenameFilesCounter:=0;
   GoodDeleteFilesCounter:=0;
   GoodMakeFoldersCounter:=0;
   GoodRemoveFoldersCounter:=0;
   BadCopyFilesCounter:=0;
+  BadMoveFilesCounter:=0;
   BadRenameFilesCounter:=0;
   BadDeleteFilesCounter:=0;
   BadMakeFoldersCounter:=0;
@@ -470,6 +557,7 @@ begin
       CheckRemoteFilesToRemove(Item.SubItems[1], Item.SubItems[2]);
     end;
   end;
+  CheckRemoteFilesToMove;
 
   if SilentMode = false then begin
 
@@ -524,40 +612,30 @@ begin
 
   if SilentMode = false then begin
 
-    if (BadCopyFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
-      Application.MessageBox(PChar(ID_BACKUP_COMPLETED + #13#10 + #13#10 +
-                                   ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 +
-                                   ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + #13#10 +
-                                   ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10 +
-                                   ID_SUCCESS_RENAME_FILES + ' ' + IntToStr(GoodRenameFilesCounter) + #13#10 +
-                                   ID_SUCCESS_REMOVE_FILES + ' ' + IntToStr(GoodDeleteFilesCounter) + #13#10 +
-                                   ID_SUCCESS_CREATE_FOLDERS + ' ' + IntToStr(GoodMakeFoldersCounter) + #13#10 +
-                                   ID_SUCCESS_REMOVE_FOLDERS + ' ' + IntToStr(GoodRemoveFoldersCounter) + #13#10 +
-                                   ID_FAIL_COPY_FILES + ' ' + IntToStr(BadCopyFilesCounter) + #13#10 +
-                                   ID_FAIL_RENAME_FILES + ' ' + IntToStr(BadRenameFilesCounter) + #13#10 +
-                                   ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
-                                   ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
-                                   ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
-                              PChar(Caption), MB_ICONINFORMATION)
+    if (BadCopyFilesCounter = 0) and (BadMoveFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
+      BackupStatusTitle:=ID_BACKUP_COMPLETED
     else
-      Application.MessageBox(PChar(ID_BACKUP_FAILED + #13#10 + #13#10 +
-                                   ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 +
-                                   ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + #13#10 +
-                                   ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10 +
-                                   ID_SUCCESS_RENAME_FILES + ' ' + IntToStr(GoodRenameFilesCounter) + #13#10 +
-                                   ID_SUCCESS_REMOVE_FILES + ' ' + IntToStr(GoodDeleteFilesCounter) + #13#10 +
-                                   ID_SUCCESS_CREATE_FOLDERS + ' ' + IntToStr(GoodMakeFoldersCounter) + #13#10 +
-                                   ID_SUCCESS_REMOVE_FOLDERS + ' ' + IntToStr(GoodRemoveFoldersCounter) + #13#10 +
-                                   ID_FAIL_COPY_FILES + ' ' + IntToStr(BadCopyFilesCounter) + #13#10 +
-                                   ID_FAIL_RENAME_FILES + ' ' + IntToStr(BadRenameFilesCounter) + #13#10 +
-                                   ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
-                                   ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
-                                   ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
-                              PChar(Caption), MB_ICONINFORMATION);
+      BackupStatusTitle:=ID_BACKUP_FAILED;
+
+    Application.MessageBox(PChar(BackupStatusTitle + #13#10 + #13#10 +
+                                 ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 + ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + #13#10#13#10 +
+                                 ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10 +
+                                 ID_SUCCESS_MOVE_FILES + ' ' + IntToStr(GoodMoveFilesCounter) + #13#10 +
+                                 ID_SUCCESS_RENAME_FILES + ' ' + IntToStr(GoodRenameFilesCounter) + #13#10 +
+                                 ID_SUCCESS_REMOVE_FILES + ' ' + IntToStr(GoodDeleteFilesCounter) + #13#10 +
+                                 ID_SUCCESS_CREATE_FOLDERS + ' ' + IntToStr(GoodMakeFoldersCounter) + #13#10 +
+                                 ID_SUCCESS_REMOVE_FOLDERS + ' ' + IntToStr(GoodRemoveFoldersCounter) + #13#10#13#10 +
+                                 ID_FAIL_COPY_FILES + ' ' + IntToStr(BadCopyFilesCounter) + #13#10 +
+                                 ID_FAIL_MOVE_FILES + ' ' + IntToStr(BadMoveFilesCounter) + #13#10 +
+                                 ID_FAIL_RENAME_FILES + ' ' + IntToStr(BadRenameFilesCounter) + #13#10 +
+                                 ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
+                                 ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
+                                 ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
+                            PChar(Caption), MB_ICONINFORMATION);
 
   end else if Trim(NotificationApp) <> '' then begin
 
-    if (BadCopyFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
+    if (BadCopyFilesCounter = 0) and (BadMoveFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
       WinExec(PAnsiChar(NotificationApp + ' -t "' + Caption + '" -d "' + ID_SUCCESS_NOTIFICATION_MESSAGE + '" -b EchoBackaper.png -c 1'), SW_SHOWNORMAL)
     else
       WinExec(PAnsiChar(NotificationApp + ' -t "' + Caption + '" -d "' + ID_FAIL_NOTIFICATION_MESSAGE + '" -b EchoBackaper.png -c 1'), SW_SHOWNORMAL);
@@ -752,8 +830,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.5.8' + #13#10 +
-  ID_LAST_UPDATE + ' 02.01.2020' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.7' + #13#10 +
+  ID_LAST_UPDATE + ' 17.10.2020' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
