@@ -250,7 +250,7 @@ end;
 
 procedure TMain.CheckRemoteFilesToMove; //Если файл был перемещён в другую папку, то перемещаем файл, а не удаляем и копируем снова
 var
-	i, j: integer;
+  i, j: integer;
   ActionStr, DeleteFilePath, FirstCopyFilePath, SecondCopyFilePath: string;
 begin
   if Actions.Count = 0 then Exit;
@@ -262,8 +262,8 @@ begin
 		  Delete(ActionStr, 1, 7);
       DeleteFilePath:=ActionStr;
 
-			for j:=0 to Actions.Count - 1 do begin
-				if i = j then Continue; //Пропускаем DELETE
+      for j:=0 to Actions.Count - 1 do begin
+        if i = j then Continue; //Пропускаем DELETE
 
         //Ищем копируемые файлы
         if Copy(Actions.Strings[j], 1, 5) = 'COPY ' then begin
@@ -281,8 +281,8 @@ begin
           end;
         end;
 
-			end;
-		end;
+      end;
+    end;
 
   //Убираем исправленные действия
   Actions.Text:=StringReplace(Actions.Text, 'FIXED' + #13#10, '', [rfReplaceAll]);
@@ -559,38 +559,44 @@ begin
   end;
   CheckRemoteFilesToMove;
 
-  if SilentMode = false then begin
+  //Количество операций
+  ActionGoodCounter:=Actions.Count;
 
-    StatusText(ID_PERFORM_OPERATIONS);
+  //Если есть операции
+  if Actions.Count > 0 then begin
 
-    //Подтверждение выполнения операций
-    if CBCheckLog.Checked then begin
-      if Actions.Count > 0 then begin
+    //Обычный режим
+    if SilentMode = false then begin
 
-        //Показываем логи
-        LogsForm.Show;
-        LogsForm.LogsMemo.Text:=Actions.Text;
+      StatusText(ID_PERFORM_OPERATIONS);
 
-        //Подтверждение операции
-        case MessageBox(Handle, PChar(ID_PERFORM_OPERATIONS), PChar(Caption), 35) of
-          6:begin
-              //Если окно не закрыто, то закрываем его
-              if LogsForm.Showing then
-                LogsForm.Close;
-              ActionsRun;
-            end;
+      //Подтверждение выполнения операций
+      if CBCheckLog.Checked then begin
 
-        end;
+          //Показываем логи
+          LogsForm.Show;
+          LogsForm.LogsMemo.Text:=Actions.Text;
 
-      end;
-    end else
-      if Actions.Count > 0 then begin
+          //Подтверждение операции
+          case MessageBox(Handle, PChar(ID_PERFORM_OPERATIONS), PChar(Caption), 35) of
+            6: begin
+                  //Если окно не закрыто, то закрываем его
+                  if LogsForm.Showing then
+                    LogsForm.Close;
+
+                  ActionsRun;
+               end;
+
+          end;
+
+      //Без подтверждения выполнения операций
+      end else
         ActionsRun;
-        ActionGoodCounter:=Actions.Count;
-      end;
 
-  end else
-    if Actions.Count > 0 then ActionsRun;
+    //Тихий режим
+    end else
+      ActionsRun;
+  end;
 
   if (BadCopyFilesCounter > 0) or (BadMoveFilesCounter > 0) or (BadDeleteFilesCounter > 0) or (BadMakeFoldersCounter > 0) or (BadRemoveFoldersCounter > 0) then begin
     ProgressBar.Position:=0;
@@ -830,8 +836,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.7' + #13#10 +
-  ID_LAST_UPDATE + ' 17.10.2020' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.7.1' + #13#10 +
+  ID_LAST_UPDATE + ' 30.10.2020' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
