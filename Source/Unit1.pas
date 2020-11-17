@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, ShlObj, Registry,
-  IniFiles;
+  IniFiles, Vcl.Menus;
 
 type
   TMain = class(TForm)
@@ -23,6 +23,9 @@ type
     OpenDialog: TOpenDialog;
     CreateBtn: TButton;
     SaveDialog: TSaveDialog;
+    ListViewPM: TPopupMenu;
+    RemSelectionBtn: TMenuItem;
+    ChooseAllBtn: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
     procedure AddBtnClick(Sender: TObject);
@@ -38,6 +41,10 @@ type
     procedure OpenBtnClick(Sender: TObject);
     procedure CreateBtnClick(Sender: TObject);
     procedure CheckRemoteFilesToMove;
+    procedure ListViewMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure RemSelectionBtnClick(Sender: TObject);
+    procedure ChooseAllBtnClick(Sender: TObject);
   private
     procedure LoadBackupPaths(FileName: string);
     { Private declarations }
@@ -288,6 +295,17 @@ begin
   Actions.Text:=StringReplace(Actions.Text, 'FIXED' + #13#10, '', [rfReplaceAll]);
 end;
 
+procedure TMain.ChooseAllBtnClick(Sender: TObject);
+var
+  i: integer;
+  Item: TListItem;
+begin
+  for i:=0 to ListView.Items.Count - 1 do begin
+    Item:=ListView.Items.Item[i];
+    Item.Checked:=true;
+  end;
+end;
+
 procedure ActionsRun;
 var
   i: integer; ActionStr: string;
@@ -430,6 +448,8 @@ begin
   ListView.Columns[1].Caption:=Ini.ReadString('Main', 'ID_NAME', '');
   ListView.Columns[2].Caption:=Ini.ReadString('Main', 'ID_LEFT_FOLDER', '');
   ListView.Columns[3].Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
+  RemSelectionBtn.Caption:=Ini.ReadString('Main', 'ID_REM_SELECTION', '');
+  ChooseAllBtn.Caption:=Ini.ReadString('Main', 'ID_CHOOSE_ALL', '');
   RunBtn.Caption:=Ini.ReadString('Main', 'ID_RUN', '');
   CreateBtn.Caption:=Ini.ReadString('Main', 'ID_CREATE', '');
   OpenBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
@@ -521,7 +541,6 @@ procedure TMain.RunBtnClick(Sender: TObject);
 var
   i: integer;
   Item: TListItem;
-
   BackupStatusTitle: string;
 begin
   StopRequest:=false;
@@ -803,6 +822,17 @@ begin
   end;
 end;
 
+procedure TMain.RemSelectionBtnClick(Sender: TObject);
+var
+  i: integer;
+  Item: TListItem;
+begin
+  for i:=0 to ListView.Items.Count - 1 do begin
+    Item:=ListView.Items.Item[i];
+    Item.Checked:=false;
+  end;
+end;
+
 procedure TMain.ListViewDblClick(Sender: TObject);
 var
   Item: TListItem;
@@ -822,6 +852,13 @@ begin
   end;
 end;
 
+procedure TMain.ListViewMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then
+    ListViewPM.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+end;
+
 procedure TMain.ExcludeBtnClick(Sender: TObject);
 begin
   ExcludeFoldersForm.ShowModal;
@@ -836,8 +873,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.7.1' + #13#10 +
-  ID_LAST_UPDATE + ' 30.10.2020' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.7.2' + #13#10 +
+  ID_LAST_UPDATE + ' 17.11.2020' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

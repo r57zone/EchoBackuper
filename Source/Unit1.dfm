@@ -64,6 +64,7 @@ object Main: TMain
     ViewStyle = vsReport
     OnDblClick = ListViewDblClick
     OnKeyDown = ListViewKeyDown
+    OnMouseDown = ListViewMouseDown
   end
   object AddBtn: TButton
     Left = 238
@@ -157,5 +158,17 @@ object Main: TMain
     Filter = 'Backup paths|*.ebp'
     Left = 96
     Top = 40
+  end
+  object ListViewPM: TPopupMenu
+    Left = 160
+    Top = 40
+    object RemSelectionBtn: TMenuItem
+      Caption = #1057#1085#1103#1090#1100' '#1074#1099#1076#1077#1083#1077#1085#1080#1077
+      OnClick = RemSelectionBtnClick
+    end
+    object ChooseAllBtn: TMenuItem
+      Caption = #1042#1099#1073#1088#1072#1090#1100' '#1074#1089#1077
+      OnClick = ChooseAllBtnClick
+    end
   end
 end
