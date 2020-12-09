@@ -3,7 +3,7 @@ object Main: TMain
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = 'EchoBackaper'
+  Caption = 'EchoBackuper'
   ClientHeight = 332
   ClientWidth = 580
   Color = clBtnFace

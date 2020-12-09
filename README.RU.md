@@ -1,10 +1,10 @@
-[![EN](https://user-images.githubusercontent.com/9499881/33184537-7be87e86-d096-11e7-89bb-f3286f752bc6.png)](https://github.com/r57zone/EchoBackaper/blob/master/README.md) 
-[![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/EchoBackaper/blob/master/README.RU.md)
-# EchoBackaper
+[![EN](https://user-images.githubusercontent.com/9499881/33184537-7be87e86-d096-11e7-89bb-f3286f752bc6.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.md) 
+[![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.RU.md)
+# EchoBackuper
 Приложение для создания резервных копий. Резервные копии создаются по принципу эха. Новые и обновлённые файлы копируются из оригинальной папки в резервную копию. Переименование, перемещение и удаление файлов происходит только в резервной копии.
 
 ## Тихий режим
->EchoBackaper.exe -b "BackupPaths.ebp" -s
+>EchoBackuper.exe -b "BackupPaths.ebp" -s
 
 **"-b** backup_ext_hdd.ebp" - загрузка иного списка связанных и исключенных папок. Файлы формата "ebp" создаются в самой программе.
 
@@ -20,7 +20,7 @@
 ## Загрузка
 >Версия для Windows 7, 8.1, 10.
 
-**[Загрузить](https://github.com/r57zone/EchoBackaper/releases)**
+**[Загрузить](https://github.com/r57zone/EchoBackuper/releases)**
 
 ## Обратная связь
 `r57zone[собака]gmail.com`

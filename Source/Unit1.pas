@@ -107,6 +107,31 @@ begin
   Main.StatusBar.SimpleText:=' ' + CutStr(Str, 70);
 end;
 
+procedure CPFile(const AFrom, ATo: string);
+var
+  FromF, ToF: file;
+  NumRead, NumWritten, DataSize: integer;
+  Buf: array[1..2048] of char;
+begin
+  try
+    DataSize:=SizeOf(Buf);
+    AssignFile(FromF, AFrom);
+    Reset(FromF, 1);
+    AssignFile(ToF, ATo);
+    Rewrite(ToF, 1);
+    repeat
+      BlockRead(FromF, Buf, DataSize, NumRead);
+      BlockWrite(ToF, Buf, NumRead, NumWritten);
+      if StopRequest then Break;
+      Application.ProcessMessages;
+    until (NumRead = 0) or (NumWritten <> NumRead);
+  finally
+    CloseFile(FromF);
+    CloseFile(ToF);
+    if StopRequest then DeleteFile(ATo);
+  end;
+end;
+
 procedure CheckFilesDiff(LocalFolder, RemoteFolder: string);
 var
   LocalFile, RemoteFile: TSearchRec;
@@ -659,6 +684,8 @@ begin
                                  ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
                             PChar(Caption), MB_ICONINFORMATION);
 
+      ProgressBar.Position:=0;
+
   end else if Trim(NotificationApp) <> '' then begin
 
     if (BadCopyFilesCounter = 0) and (BadMoveFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
@@ -874,8 +901,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.7.2' + #13#10 +
-  ID_LAST_UPDATE + ' 17.11.2020' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.7.3' + #13#10 +
+  ID_LAST_UPDATE + ' 09.12.2020' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
