@@ -24,6 +24,8 @@ object Main: TMain
     Width = 580
     Height = 19
     Panels = <>
+    ParentShowHint = False
+    ShowHint = True
     SimplePanel = True
   end
   object RunBtn: TButton

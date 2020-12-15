@@ -104,28 +104,36 @@ end;
 
 procedure StatusText(Str: string);
 begin
-  Main.StatusBar.SimpleText:=' ' + CutStr(Str, 70);
+  Main.StatusBar.Hint:=Str;
+  Main.StatusBar.SimpleText:=' ' + CutStr(Str, 80);
 end;
 
-procedure CPFile(const AFrom, ATo: string);
+function CPFile(const AFrom, ATo: string): boolean;
 var
   FromF, ToF: file;
   NumRead, NumWritten, DataSize: integer;
+  AFromSize, CopySize: int64;
   Buf: array[1..2048] of char;
 begin
+  Result:=false;
   try
     DataSize:=SizeOf(Buf);
     AssignFile(FromF, AFrom);
     Reset(FromF, 1);
     AssignFile(ToF, ATo);
     Rewrite(ToF, 1);
+    AFromSize:=FileSize(FromF);
+    CopySize:=0;
     repeat
       BlockRead(FromF, Buf, DataSize, NumRead);
       BlockWrite(ToF, Buf, NumRead, NumWritten);
+      CopySize:=CopySize + DataSize;
+      StatusText(ID_COPY_FILE + ' ' + IntToStr( Round( CopySize / (AFromSize / 100) ) ) + '% ' + AFrom);
       if StopRequest then Break;
       Application.ProcessMessages;
     until (NumRead = 0) or (NumWritten <> NumRead);
   finally
+    if (AFromSize = FileSize(ToF)) and (FileSetDate(TFileRec(ToF).Handle, FileGetDate(TFileRec(FromF).Handle)) = 0) then Result:=true;
     CloseFile(FromF);
     CloseFile(ToF);
     if StopRequest then DeleteFile(ATo);
@@ -346,9 +354,11 @@ begin
     if Copy(Actions.Strings[i], 1, 5) = 'COPY ' then begin
       Delete(ActionStr, 1, 5);
       try
-        StatusText(ID_COPY_FILE + ' ' + Copy(ActionStr, 1, Pos(#9, ActionStr) - 1));
-        if CopyFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
-                     PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ), false) then begin
+        {StatusText(ID_COPY_FILE + ' ' + Copy(ActionStr, 1, Pos(#9, ActionStr) - 1));
+        {if CopyFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
+                     PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ), false) then begin}
+        if CPFile( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1),
+                   Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) then begin
           Inc(GoodCopyFilesCounter);
           Actions.Strings[i]:='';
         end else
@@ -684,8 +694,6 @@ begin
                                  ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
                             PChar(Caption), MB_ICONINFORMATION);
 
-      ProgressBar.Position:=0;
-
   end else if Trim(NotificationApp) <> '' then begin
 
     if (BadCopyFilesCounter = 0) and (BadMoveFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
@@ -901,8 +909,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.7.3' + #13#10 +
-  ID_LAST_UPDATE + ' 09.12.2020' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.8' + #13#10 +
+  ID_LAST_UPDATE + ' 15.12.2020' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
