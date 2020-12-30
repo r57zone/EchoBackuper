@@ -108,7 +108,7 @@ begin
   Main.StatusBar.SimpleText:=' ' + CutStr(Str, 80);
 end;
 
-function CPFile(const AFrom, ATo: string): boolean;
+{function CPFile(const AFrom, ATo: string): boolean;
 var
   FromF, ToF: file;
   NumRead, NumWritten, DataSize: integer;
@@ -138,7 +138,7 @@ begin
     CloseFile(ToF);
     if StopRequest then DeleteFile(ATo);
   end;
-end;
+end;}
 
 procedure CheckFilesDiff(LocalFolder, RemoteFolder: string);
 var
@@ -354,15 +354,16 @@ begin
     if Copy(Actions.Strings[i], 1, 5) = 'COPY ' then begin
       Delete(ActionStr, 1, 5);
       try
-        {StatusText(ID_COPY_FILE + ' ' + Copy(ActionStr, 1, Pos(#9, ActionStr) - 1));
-        {if CopyFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
-                     PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ), false) then begin}
-        if CPFile( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1),
-                   Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) then begin
+        StatusText(ID_COPY_FILE + ' ' + Copy(ActionStr, 1, Pos(#9, ActionStr) - 1));
+        if CopyFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
+                     PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ), false) then begin
+        {if CPFile( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1),
+                   Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) then begin}
           Inc(GoodCopyFilesCounter);
           Actions.Strings[i]:='';
         end else
           Inc(BadCopyFilesCounter);
+        Application.ProcessMessages;
       except
         Inc(BadCopyFilesCounter);
       end;
@@ -909,8 +910,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.8' + #13#10 +
-  ID_LAST_UPDATE + ' 15.12.2020' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.8.1' + #13#10 +
+  ID_LAST_UPDATE + ' 30.12.2020' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
