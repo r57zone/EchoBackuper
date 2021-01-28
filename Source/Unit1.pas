@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, ShlObj, Registry,
-  IniFiles, Vcl.Menus;
+  IniFiles, Vcl.Menus, ShellAPI;
 
 type
   TMain = class(TForm)
@@ -26,6 +26,10 @@ type
     ListViewPM: TPopupMenu;
     RemSelectionBtn: TMenuItem;
     ChooseAllBtn: TMenuItem;
+    LineNoneBtn: TMenuItem;
+    OpenFolderBtn: TMenuItem;
+    LeftFolderBtn: TMenuItem;
+    RightFolderBtn: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
     procedure AddBtnClick(Sender: TObject);
@@ -45,6 +49,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure RemSelectionBtnClick(Sender: TObject);
     procedure ChooseAllBtnClick(Sender: TObject);
+    procedure LeftFolderBtnClick(Sender: TObject);
+    procedure RightFolderBtnClick(Sender: TObject);
   private
     procedure LoadBackupPaths(FileName: string);
     { Private declarations }
@@ -487,9 +493,12 @@ begin
   ListView.Columns[3].Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
   RemSelectionBtn.Caption:=Ini.ReadString('Main', 'ID_REM_SELECTION', '');
   ChooseAllBtn.Caption:=Ini.ReadString('Main', 'ID_CHOOSE_ALL', '');
+  OpenFolderBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
+  LeftFolderBtn.Caption:=Ini.ReadString('Main', 'ID_LEFT_FOLDER', '');
+  RightFolderBtn.Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
   RunBtn.Caption:=Ini.ReadString('Main', 'ID_RUN', '');
   CreateBtn.Caption:=Ini.ReadString('Main', 'ID_CREATE', '');
-  OpenBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
+  OpenBtn.Caption:=OpenFolderBtn.Caption;
   AddBtn.Caption:=Ini.ReadString('Main', 'ID_ADD', '');
   RemBtn.Caption:=Ini.ReadString('Main', 'ID_REMOVE', '');
   ExcludeBtn.Caption:=Ini.ReadString('Main', 'ID_EXCLUDE', '');
@@ -870,6 +879,26 @@ begin
   end;
 end;
 
+procedure TMain.RightFolderBtnClick(Sender: TObject);
+var
+  Item: TListItem;
+begin
+  if ListView.ItemIndex <> -1 then begin
+    Item:=ListView.Items.Item[ListView.ItemIndex];
+    ShellExecute(0, 'open', 'explorer', PChar('/select, "' + Item.SubItems[2] + '"'), nil, SW_SHOW);
+  end;
+end;
+
+procedure TMain.LeftFolderBtnClick(Sender: TObject);
+var
+  Item: TListItem;
+begin
+  if ListView.ItemIndex <> -1 then begin
+    Item:=ListView.Items.Item[ListView.ItemIndex];
+    ShellExecute(0, 'open', 'explorer', PChar('/select, "' + Item.SubItems[1] + '"'), nil, SW_SHOW);
+  end;
+end;
+
 procedure TMain.ListViewDblClick(Sender: TObject);
 var
   Item: TListItem;
@@ -910,8 +939,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.8.1' + #13#10 +
-  ID_LAST_UPDATE + ' 30.12.2020' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.8.2' + #13#10 +
+  ID_LAST_UPDATE + ' 28.01.2021' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
