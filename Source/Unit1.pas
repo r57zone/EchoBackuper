@@ -302,7 +302,9 @@ begin
   if Actions.Count = 0 then Exit;
   StatusText(ID_CHECK_MOVE_FILES);
 
-  for i:=0 to Actions.Count - 1 do
+  ProgressBar.Max:=Actions.Count;
+
+  for i:=0 to Actions.Count - 1 do begin
 		if Copy(Actions.Strings[i], 1, 7) = 'DELETE ' then begin
       ActionStr:=Actions.Strings[i];
 		  Delete(ActionStr, 1, 7);
@@ -330,9 +332,13 @@ begin
 
       end;
     end;
+    ProgressBar.Position:=i + 1; //Отображаем прогресс
+  end;
 
   //Убираем исправленные действия
   Actions.Text:=StringReplace(Actions.Text, 'FIXED' + #13#10, '', [rfReplaceAll]);
+
+  ProgressBar.Position:=0;
 end;
 
 procedure TMain.ChooseAllBtnClick(Sender: TObject);
@@ -939,8 +945,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.8.2' + #13#10 +
-  ID_LAST_UPDATE + ' 28.01.2021' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.8.3' + #13#10 +
+  ID_LAST_UPDATE + ' 30.01.2021' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
