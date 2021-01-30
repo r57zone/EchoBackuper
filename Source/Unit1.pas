@@ -305,6 +305,8 @@ begin
   ProgressBar.Max:=Actions.Count;
 
   for i:=0 to Actions.Count - 1 do begin
+    if StopRequest then Break;
+
 		if Copy(Actions.Strings[i], 1, 7) = 'DELETE ' then begin
       ActionStr:=Actions.Strings[i];
 		  Delete(ActionStr, 1, 7);
