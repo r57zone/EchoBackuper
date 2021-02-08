@@ -186,5 +186,19 @@ object Main: TMain
         OnClick = RightFolderBtnClick
       end
     end
+    object LineNoneBtn2: TMenuItem
+      Caption = '-'
+    end
+    object MoveBtn: TMenuItem
+      Caption = #1055#1077#1088#1077#1084#1077#1089#1090#1080#1090#1100
+      object UpBtn: TMenuItem
+        Caption = #1042#1099#1096#1077
+        OnClick = UpBtnClick
+      end
+      object DownBtn: TMenuItem
+        Caption = #1053#1080#1078#1077
+        OnClick = DownBtnClick
+      end
+    end
   end
 end

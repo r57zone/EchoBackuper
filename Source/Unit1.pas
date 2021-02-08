@@ -30,6 +30,10 @@ type
     OpenFolderBtn: TMenuItem;
     LeftFolderBtn: TMenuItem;
     RightFolderBtn: TMenuItem;
+    LineNoneBtn2: TMenuItem;
+    MoveBtn: TMenuItem;
+    UpBtn: TMenuItem;
+    DownBtn: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
     procedure AddBtnClick(Sender: TObject);
@@ -51,6 +55,8 @@ type
     procedure ChooseAllBtnClick(Sender: TObject);
     procedure LeftFolderBtnClick(Sender: TObject);
     procedure RightFolderBtnClick(Sender: TObject);
+    procedure UpBtnClick(Sender: TObject);
+    procedure DownBtnClick(Sender: TObject);
   private
     procedure LoadBackupPaths(FileName: string);
     { Private declarations }
@@ -79,7 +85,7 @@ var
   ID_SUCCESS_COPY_FILES, ID_SUCCESS_MOVE_FILES, ID_SUCCESS_RENAME_FILES, ID_SUCCESS_REMOVE_FILES,
   ID_SUCCESS_CREATE_FOLDERS, ID_SUCCESS_REMOVE_FOLDERS, ID_FAIL_COPY_FILES, ID_FAIL_MOVE_FILES, ID_FAIL_RENAME_FILES,
   ID_FAIL_REMOVE_FILES, ID_FAIL_CREATE_FOLDERS, ID_FAIL_REMOVE_FOLDERS: string;
-  ID_PERFORM_OPERATIONS, ID_ENTER_NAME_PARE_FOLDERS, ID_CHOOSE_LEFT_FOLDER,
+  ID_PERFORM_OPERATIONS, ID_ENTER_NAME_PAIR_FOLDERS, ID_CHOOSE_LEFT_FOLDER,
   ID_CHOOSE_RIGHT_FOLDER, ID_CHOOSE_FOLDER_ERROR, ID_SUCCESS_NOTIFICATION_MESSAGE,
   ID_FAIL_NOTIFICATION_MESSAGE: string;
   ID_ABOUT_TITLE, ID_LAST_UPDATE: string;
@@ -501,6 +507,11 @@ begin
   ListView.Columns[3].Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
   RemSelectionBtn.Caption:=Ini.ReadString('Main', 'ID_REM_SELECTION', '');
   ChooseAllBtn.Caption:=Ini.ReadString('Main', 'ID_CHOOSE_ALL', '');
+
+  MoveBtn.Caption:=Ini.ReadString('Main', 'ID_MOVE', '');
+  UpBtn.Caption:=Ini.ReadString('Main', 'ID_UP', '');
+  DownBtn.Caption:=Ini.ReadString('Main', 'ID_DOWN', '');
+
   OpenFolderBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
   LeftFolderBtn.Caption:=Ini.ReadString('Main', 'ID_LEFT_FOLDER', '');
   RightFolderBtn.Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
@@ -544,7 +555,7 @@ begin
   ID_FAIL_CREATE_FOLDERS:=Ini.ReadString('Main', 'ID_FAIL_CREATE_FOLDERS', '');
   ID_FAIL_REMOVE_FOLDERS:=Ini.ReadString('Main', 'ID_FAIL_REMOVE_FOLDERS', '');
   ID_PERFORM_OPERATIONS:=Ini.ReadString('Main', 'ID_PERFORM_OPERATIONS', '');
-  ID_ENTER_NAME_PARE_FOLDERS:=Ini.ReadString('Main', 'ID_ENTER_NAME_PARE_FOLDERS', '');
+  ID_ENTER_NAME_PAIR_FOLDERS:=Ini.ReadString('Main', 'ID_ENTER_NAME_PAIR_FOLDERS', '');
   ID_CHOOSE_LEFT_FOLDER:=Ini.ReadString('Main', 'ID_CHOOSE_LEFT_FOLDER', '');
   ID_CHOOSE_RIGHT_FOLDER:=Ini.ReadString('Main', 'ID_CHOOSE_RIGHT_FOLDER', '');
   ID_CHOOSE_FOLDER_ERROR:=Ini.ReadString('Main', 'ID_CHOOSE_FOLDER_ERROR', '');
@@ -846,7 +857,7 @@ begin
   LeftFolder:='';
   RightFolder:='';
 
-  InputQuery(Caption, ID_ENTER_NAME_PARE_FOLDERS, NameFolders);
+  InputQuery(Caption, ID_ENTER_NAME_PAIR_FOLDERS, NameFolders);
 
   if Trim(NameFolders) <> '' then begin
     LeftFolder:=BrowseFolderDialog(PChar(ID_CHOOSE_LEFT_FOLDER));
@@ -945,10 +956,59 @@ begin
   StopBtn.Enabled:=false;
 end;
 
+procedure TMain.UpBtnClick(Sender: TObject);
+var
+  ItemDown, ItemUp: TListItem;
+  ItemUpTitle, ItemUpPairFolders: string;
+begin
+  if (ListView.ItemIndex > 0) then begin
+    ItemUp:=ListView.Items.Item[ListView.ItemIndex - 1];
+    ItemDown:=ListView.Items.Item[ListView.ItemIndex];
+
+    ItemUpTitle:=ItemUp.Caption;
+    ItemUpPairFolders:=ItemUp.SubItems.Text;
+
+    ItemUp.Caption:=ItemDown.Caption;
+    ItemUp.SubItems.Text:=ItemDown.SubItems.Text;
+
+    ItemDown.Caption:=ItemUpTitle;
+    ItemDown.SubItems.Text:=ItemUpPairFolders;
+
+    ListView.ItemIndex:=ListView.ItemIndex - 1;
+
+    SaveBackupPaths;
+  end;
+end;
+
+procedure TMain.DownBtnClick(Sender: TObject);
+var
+  ItemDown, ItemUp: TListItem;
+  ItemUpTitle, ItemUpPairFolders: string;
+begin
+  if (ListView.ItemIndex <> -1) and (ListView.ItemIndex < ListView.Items.Count - 1) then begin
+
+    ItemUp:=ListView.Items.Item[ListView.ItemIndex];
+    ItemDown:=ListView.Items.Item[ListView.ItemIndex + 1];
+
+    ItemUpTitle:=ItemUp.Caption;
+    ItemUpPairFolders:=ItemUp.SubItems.Text;
+
+    ItemUp.Caption:=ItemDown.Caption;
+    ItemUp.SubItems.Text:=ItemDown.SubItems.Text;
+
+    ItemDown.Caption:=ItemUpTitle;
+    ItemDown.SubItems.Text:=ItemUpPairFolders;
+
+    ListView.ItemIndex:=ListView.ItemIndex + 1;
+
+    SaveBackupPaths;
+  end;
+end;
+
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.8.3' + #13#10 +
-  ID_LAST_UPDATE + ' 30.01.2021' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.8.4' + #13#10 +
+  ID_LAST_UPDATE + ' 09.02.2021' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
