@@ -94,7 +94,7 @@ object Main: TMain
     OnClick = RemBtnClick
   end
   object AboutBtn: TButton
-    Left = 546
+    Left = 545
     Top = 233
     Width = 27
     Height = 25

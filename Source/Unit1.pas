@@ -92,9 +92,9 @@ var
   ID_EXCLUDE_TITLE, ID_SELECT_EXCLUDE_FOLDER, ID_OK, ID_CANCEL: string;
 
 const
-  //Название файла путей для резеревной копии по умолчанию
+  // Название файла путей для резеревной копии по умолчанию
   BACKUP_PATHS_FILE_NAME = 'BackupPaths.ebp';
-  //Зарезервированные фразы для файла
+  // Зарезервированные фразы для файла
   PAIR_FOLDERS_FILE = 'PAIR FOLDERS:';
   EXCLUDE_PATHS_FILE = 'EXCLUDE PATHS:';
 
@@ -120,35 +120,58 @@ begin
   Main.StatusBar.SimpleText:=' ' + CutStr(Str, 80);
 end;
 
-{function CPFile(const AFrom, ATo: string): boolean;
+{function FileSetCreatedDate(FileName: string; Age: Integer): Integer;
 var
-  FromF, ToF: file;
-  NumRead, NumWritten, DataSize: integer;
-  AFromSize, CopySize: int64;
-  Buf: array[1..2048] of char;
+  SourceFile: THandle;
+  LocalFileTime, FileTime: TFileTime;
+begin
+  SourceFile:=FileOpen(FileName, fmOpenWrite);
+  if SourceFile=THandle(-1) then
+    Result:=GetLastError
+  else
+  if DosDateTimeToFileTime(LongRec(Age).Hi, LongRec(Age).Lo, LocalFileTime) and
+     LocalFileTimeToFileTime(LocalFileTime, FileTime) then begin
+    Result:=0;
+    SetFileTime(SourceFile, @FileTime, nil, nil);
+    FileClose(SourceFile);
+  end;
+end;
+
+function CPFile(const SourceFileName, TargetFileName: string): boolean;
+var
+  SourceFile, TargetFile: THandle;
+  NumRead, NumWritten, BufferSize: LongWord;
+  SourceFileSize, CopySize: int64;
+  Buffer: array[1..2048] of Char;
+  SameSizes: boolean;
 begin
   Result:=false;
   try
-    DataSize:=SizeOf(Buf);
-    AssignFile(FromF, AFrom);
-    Reset(FromF, 1);
-    AssignFile(ToF, ATo);
-    Rewrite(ToF, 1);
-    AFromSize:=FileSize(FromF);
+    BufferSize:=SizeOf(Buffer);
+    SourceFile:=CreateFile(PAnsiChar(SourceFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    if FileExists(TargetFileName) then DeleteFileA(PAnsiChar(TargetFileName));
+    TargetFile:=CreateFile(PAnsiChar(TargetFileName), GENERIC_WRITE, FILE_SHARE_WRITE or FILE_SHARE_READ, nil, CREATE_ALWAYS, FileGetAttr(SourceFileName), 0);
+    if TargetFile = INVALID_HANDLE_VALUE then begin
+      CloseHandle(SourceFile);
+      Exit;
+    end;
+    SourceFileSize:=GetFileSize(SourceFile, nil);
     CopySize:=0;
     repeat
-      BlockRead(FromF, Buf, DataSize, NumRead);
-      BlockWrite(ToF, Buf, NumRead, NumWritten);
-      CopySize:=CopySize + DataSize;
-      StatusText(ID_COPY_FILE + ' ' + IntToStr( Round( CopySize / (AFromSize / 100) ) ) + '% ' + AFrom);
+      if not ReadFile(SourceFile, Buffer, BufferSize, NumRead, nil) then break;
+      if not WriteFile(TargetFile, Buffer, NumRead, NumWritten, nil) then break;
+      CopySize:=CopySize + NumWritten;
+      StatusText(ID_COPY_FILE + ' ' + IntToStr( Round( CopySize / (SourceFileSize / 100) ) ) + '% ' + SourceFileName);
       if StopRequest then Break;
       Application.ProcessMessages;
     until (NumRead = 0) or (NumWritten <> NumRead);
   finally
-    if (AFromSize = FileSize(ToF)) and (FileSetDate(TFileRec(ToF).Handle, FileGetDate(TFileRec(FromF).Handle)) = 0) then Result:=true;
-    CloseFile(FromF);
-    CloseFile(ToF);
-    if StopRequest then DeleteFile(ATo);
+    SameSizes:=(SourceFileSize = GetFileSize(TargetFile, nil)); // Сравниваем размеры пока файлы открыты
+    FileClose(SourceFile);
+    FileClose(TargetFile);
+    if (SameSizes) and (FileSetDate( TargetFileName, FileAge(SourceFileName) ) = 0 ) then Result:=true;
+       //(FileSetCreatedDate( TargetFileName, FileAge(SourceFileName) ) = 0 ) then Result:=true;
+    if Result = false or StopRequest then DeleteFile(PAnsiChar(TargetFileName));
   end;
 end;}
 
@@ -160,7 +183,7 @@ var
 begin
   if StopRequest then Exit;
 
-  //Игнорируемые папки
+  // Игнорируемые папки
   for i:=0 to ExcludePaths.Count - 1 do
     if ExcludePaths.Strings[i] = LocalFolder then Exit;
 
@@ -177,25 +200,25 @@ begin
 
     if (LocalFile.Name = '.') or (LocalFile.Name = '..') then Continue;   //Не обрабатываем возвраты папок
 
-    //Проверка файлов
+    // Проверка файлов
     if (LocalFile.Attr and faDirectory) <> faDirectory then begin
 
       Inc(FilesCounter);
 
-      //Если файл отсуствует, то копируем, а если во вторичной папке есть этот файл, то переименовываем
+      // Если файл отсуствует, то копируем, а если во вторичной папке есть этот файл, то переименовываем
       if not FileExists(RemoteFolder + LocalFile.Name) then begin
 
-        //Проверяем все файлы во вторичной папке, на случай если файл переименовали
+        // Проверяем все файлы во вторичной папке, на случай если файл переименовали
         FoundCurrentFile:=false;
         if FindFirst(RemoteFolder + '*.*', faAnyFile, RemoteFile) = 0 then
         repeat
           Application.ProcessMessages;
 
-          //Если время файла, размер совпадает и такого файла нет в первичной папке, то переименовываем файл во вторичной папке
-          //Файл переименован
+          // Если время файла, размер совпадает и такого файла нет в первичной папке, то переименовываем файл во вторичной папке
+          // Файл переименован
           if (LocalFile.Time = RemoteFile.Time) and (LocalFile.Size = RemoteFile.Size) and (FileExists(LocalFolder + RemoteFile.Name) = false) then begin
             Actions.Add('RENAME ' + RemoteFolder + RemoteFile.Name + #9 + RemoteFolder + LocalFile.Name);
-            //Добавляем в список игнориемых файлов, чтобы он не удалился (до переименования)
+            // Добавляем в список игнориемых файлов, чтобы он не удалился (до переименования)
             ExcludeRenameFiles.Add(RemoteFolder + RemoteFile.Name);
             StatusText(ID_FILE_RENAMED + ' ' + LocalFolder + LocalFile.Name);
             FoundCurrentFile:=true;
@@ -205,18 +228,18 @@ begin
         until FindNext(RemoteFile) <> 0;
         FindClose(RemoteFile);
 
-        //Если во вторичной папке схожих файлов не найдено, то просто копируем новый файл
-        //Найден новый файл
+        // Если во вторичной папке схожих файлов не найдено, то просто копируем новый файл
+        // Найден новый файл
         if FoundCurrentFile = false then begin
           Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
           StatusText(ID_FOUND_NEW_FILE + ' ' + LocalFolder + LocalFile.Name);
         end;
 
-      //Если файл есть
+      // Если файл есть
       end else if FindFirst(RemoteFolder + LocalFile.Name, faAnyFile, RemoteFile) = 0 then begin
 
-          //Если время файла или размер не совпадает, то копируем
-          //Файл обновлён
+          // Если время файла или размер не совпадает, то копируем
+          // Файл обновлён
           if (LocalFile.Time <> RemoteFile.Time) or (LocalFile.Size <> RemoteFile.Size) then begin
             Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
             StatusText(ID_FILE_UPDATED + ' ' + LocalFolder + LocalFile.Name);
@@ -225,13 +248,13 @@ begin
           FindClose(RemoteFile);
       end;
 
-    //Проверка папок
+    // Проверка папок
     end else begin
-      //Создаём папку если её не существует и её нет в списке игнорируемых
+      // Создаём папку если её не существует и её нет в списке игнорируемых
       if (not DirectoryExists(RemoteFolder + LocalFile.Name)) and (Pos(LocalFolder + LocalFile.Name, ExcludePaths.Text) = 0) then
         Actions.Add('MKDIR ' + RemoteFolder + LocalFile.Name);
 
-      //Сравниваем файлы
+      // Сравниваем файлы
       CheckFilesDiff(LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name);
     end;
 
@@ -246,7 +269,7 @@ var
 begin
   if StopRequest then Exit;
 
-  //Игнорируемые папки
+  // Игнорируемые папки
   for i:=0 to ExcludePaths.Count - 1 do
     if ExcludePaths.Strings[i] = LocalFolder then Exit;
 
@@ -261,8 +284,8 @@ begin
     if (RemoteFile.Name <> '.') and (RemoteFile.Name <> '..') then
       if (RemoteFile.Attr and faDirectory) <> faDirectory then begin
 
-        //Проверяем наличие файлов и исключаем файлы для переименования
-        //Найден старый файл
+        // Проверяем наличие файлов и исключаем файлы для переименования
+        // Найден старый файл
         if (FileExists(LocalFolder + RemoteFile.Name) = false) and (Pos(RemoteFolder + RemoteFile.Name, ExcludeRenameFiles.Text) = 0) then begin
           Actions.Add('DELETE ' + RemoteFolder + RemoteFile.Name);
           StatusText(ID_FOUND_OLD_FILE + ' ' + RemoteFolder + RemoteFile.Name);
@@ -271,7 +294,7 @@ begin
       end else begin
         CheckRemoteFilesToRemove(LocalFolder + RemoteFile.Name, RemoteFolder + RemoteFile.Name);
 
-        //После проверки файлов проверяем наличие папки
+        // После проверки файлов проверяем наличие папки
         if not DirectoryExists(LocalFolder + RemoteFile.Name) then
           Actions.Add('RMDIR ' + RemoteFolder + RemoteFile.Name);
       end;
@@ -280,7 +303,7 @@ begin
   FindClose(RemoteFile);
 end;
 
-//Сравнение двух файлов на соотвествие, по дате и размеру
+// Сравнение двух файлов на соотвествие, по дате и размеру
 function CompareFileIdentity(FirstFilePath, SecondFilePath: string): boolean;
 var
   FirstFile, SecondFile: TSearchRec;
@@ -300,7 +323,7 @@ begin
   end;
 end;
 
-procedure TMain.CheckRemoteFilesToMove; //Если файл был перемещён в другую папку, то перемещаем файл, а не удаляем и копируем снова
+procedure TMain.CheckRemoteFilesToMove; // Если файл был перемещён в другую папку, то перемещаем файл, а не удаляем и копируем снова
 var
   i, j: integer;
   ActionStr, DeleteFilePath, FirstCopyFilePath, SecondCopyFilePath: string;
@@ -320,9 +343,9 @@ begin
 
       for j:=0 to Actions.Count - 1 do begin
         Application.ProcessMessages;
-        if i = j then Continue; //Пропускаем DELETE
+        if i = j then Continue; // Пропускаем DELETE
 
-        //Ищем копируемые файлы
+        // Ищем копируемые файлы
         if Copy(Actions.Strings[j], 1, 5) = 'COPY ' then begin
           ActionStr:=Actions.Strings[j];
           Delete(ActionStr, 1, 5);
@@ -330,7 +353,7 @@ begin
           FirstCopyFilePath:=Copy(ActionStr, 1, Pos(#9, ActionStr) - 1);
           SecondCopyFilePath:=Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr));
 
-          //Проверка на соответствие файлов
+          // Проверка на соответствие файлов
           if CompareFileIdentity(DeleteFilePath, FirstCopyFilePath) then begin
             Actions.Strings[j]:='MOVE ' + DeleteFilePath + #9 + SecondCopyFilePath;
             Actions.Strings[i]:='FIXED';
@@ -340,10 +363,10 @@ begin
 
       end;
     end;
-    ProgressBar.Position:=i + 1; //Отображаем прогресс
+    ProgressBar.Position:=i + 1; // Отображаем прогресс
   end;
 
-  //Убираем исправленные действия
+  // Убираем исправленные действия
   Actions.Text:=StringReplace(Actions.Text, 'FIXED' + #13#10, '', [rfReplaceAll]);
 
   ProgressBar.Position:=0;
@@ -393,6 +416,8 @@ begin
       Delete(ActionStr, 1, 5);
       try
         StatusText(ID_MOVE_FILE + ' ' + Copy(ActionStr, 1, Pos(#9, ActionStr) - 1));
+        if FileExists( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) then // Если старый, конечный файл существует, то удаляем его перед перемещением нового
+          DeleteFile( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) );
         if MoveFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
                      PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) ) then begin
           Inc(GoodMoveFilesCounter);
@@ -495,7 +520,7 @@ begin
   CBCheckLog.Checked:=Ini.ReadBool('Main', 'LookTasks', true);
   Ini.Free;
 
-  //Перевод
+  // Перевод
   if FileExists(ExtractFilePath(ParamStr(0)) + 'Languages\' + GetLocaleInformation(LOCALE_SENGLANGUAGE) + '.ini') then
     Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Languages\' + GetLocaleInformation(LOCALE_SENGLANGUAGE) + '.ini')
   else
@@ -507,11 +532,9 @@ begin
   ListView.Columns[3].Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
   RemSelectionBtn.Caption:=Ini.ReadString('Main', 'ID_REM_SELECTION', '');
   ChooseAllBtn.Caption:=Ini.ReadString('Main', 'ID_CHOOSE_ALL', '');
-
   MoveBtn.Caption:=Ini.ReadString('Main', 'ID_MOVE', '');
   UpBtn.Caption:=Ini.ReadString('Main', 'ID_UP', '');
   DownBtn.Caption:=Ini.ReadString('Main', 'ID_DOWN', '');
-
   OpenFolderBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
   LeftFolderBtn.Caption:=Ini.ReadString('Main', 'ID_LEFT_FOLDER', '');
   RightFolderBtn.Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
@@ -578,7 +601,7 @@ begin
       SilentMode:=true;
   end;
 
-  ExcludePaths:=TStringList.Create; //Создаём до загрузки путей для исключения
+  ExcludePaths:=TStringList.Create; // Создаём до загрузки путей для исключения
 
   if CustomBackupFile = '' then
     LoadBackupPaths(ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME)
@@ -643,28 +666,28 @@ begin
   end;
   CheckRemoteFilesToMove;
 
-  //Количество операций
+  // Количество операций
   ActionGoodCounter:=Actions.Count;
 
-  //Если есть операции
+  // Если есть операции
   if Actions.Count > 0 then begin
 
-    //Обычный режим
+    // Обычный режим
     if SilentMode = false then begin
 
       StatusText(ID_PERFORM_OPERATIONS);
 
-      //Подтверждение выполнения операций
+      // Подтверждение выполнения операций
       if CBCheckLog.Checked then begin
 
-          //Показываем логи
+          // Показываем логи
           LogsForm.Show;
           LogsForm.LogsMemo.Text:=Actions.Text;
 
-          //Подтверждение операции
+          // Подтверждение операции
           case MessageBox(Handle, PChar(ID_PERFORM_OPERATIONS), PChar(Caption), 35) of
             6: begin
-                  //Если окно не закрыто, то закрываем его
+                  // Если окно не закрыто, то закрываем его
                   if LogsForm.Showing then
                     LogsForm.Close;
 
@@ -673,11 +696,11 @@ begin
 
           end;
 
-      //Без подтверждения выполнения операций
+      // Без подтверждения выполнения операций
       end else
         ActionsRun;
 
-    //Тихий режим
+    // Тихий режим
     end else
       ActionsRun;
   end;
@@ -722,6 +745,15 @@ begin
                                  ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
                                  ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
                             PChar(Caption), MB_ICONINFORMATION);
+
+    if Actions.Count > 0 then begin // Выводим проблемные операции
+      LogsForm.Show;
+      for i:=Actions.Count - 1 downto 0 do
+        if Actions.Strings[i] = '' then
+          Actions.Delete(i);
+      LogsForm.LogsMemo.Text:=Actions.Text;
+    end;
+
 
   end else if Trim(NotificationApp) <> '' then begin
 
@@ -774,7 +806,7 @@ procedure TMain.CreateBtnClick(Sender: TObject);
 begin
   if SaveDialog.Execute then begin
     CurrentBackupFilePath:=SaveDialog.FileName;
-    //Очищаем текущие пути
+    // Очищаем текущие пути
     ListView.Clear;
     ExcludePaths.Clear;
   end;
@@ -786,7 +818,7 @@ var
   Item: TListItem; BackupPaths: TStringList; Str: string;
   LoadExcludePaths: boolean;
 begin
-  //Очищаем текущие пути
+  // Очищаем текущие пути
   ListView.Clear;
   ExcludePaths.Clear;
 
@@ -796,14 +828,14 @@ begin
   if FileExists(FileName) then begin
     BackupPaths.LoadFromFile(FileName);
 
-    //Сохраняем текущий путь для сохранения
+    // Сохраняем текущий путь для сохранения
     CurrentBackupFilePath:=FileName;
   end else
-    //Если файл не найден, то читаем дефолтный файл
+    // Если файл не найден, то читаем дефолтный файл
     CurrentBackupFilePath:=ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME;
 
 
-  for i:=1 to BackupPaths.Count - 1 do begin //Первая строка зарезервирована под "PAIR FOLDERS:"
+  for i:=1 to BackupPaths.Count - 1 do begin // Первая строка зарезервирована под "PAIR FOLDERS:"
     if BackupPaths.Strings[i] = EXCLUDE_PATHS_FILE then begin
       LoadExcludePaths:=true;
       Continue;
@@ -834,18 +866,18 @@ var
 begin
   BackupPaths:=TStringList.Create;
 
-  //Добавляем связанные папки
+  // Добавляем связанные папки
   BackupPaths.Add(PAIR_FOLDERS_FILE);
   for i:=0 to ListView.Items.Count - 1 do begin
     Item:=ListView.Items.Item[i];
     BackupPaths.Add(Item.SubItems[0]+ #9 + Item.SubItems[1] + #9 + Item.SubItems[2]);
   end;
 
-  //Добавляем исключённые пути
+  // Добавляем исключённые пути
   BackupPaths.Add(EXCLUDE_PATHS_FILE);
   BackupPaths.Add(Trim(ExcludePaths.Text));
 
-  BackupPaths.SaveToFile(CurrentBackupFilePath); //Сохраняем в текущий открытый файл
+  BackupPaths.SaveToFile(CurrentBackupFilePath); // Сохраняем в текущий открытый файл
   BackupPaths.Free;
 end;
 
@@ -1007,8 +1039,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.8.4' + #13#10 +
-  ID_LAST_UPDATE + ' 09.02.2021' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.8.5' + #13#10 +
+  ID_LAST_UPDATE + ' 01.12.2021' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
