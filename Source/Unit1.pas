@@ -518,6 +518,7 @@ var
 begin
   Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Config.ini');
   CBCheckLog.Checked:=Ini.ReadBool('Main', 'LookTasks', true);
+  OpenDialog.InitialDir:=Ini.ReadString('Main', 'BackupFilesFolder', '');
   Ini.Free;
 
   // Перевод
@@ -744,7 +745,7 @@ begin
                                  ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
                                  ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
                                  ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
-                            PChar(Caption), MB_ICONINFORMATION);
+                            PChar(Caption), MB_ICONINFORMATION or MB_TOPMOST);
 
     if Actions.Count > 0 then begin // Выводим проблемные операции
       LogsForm.Show;
@@ -788,9 +789,14 @@ begin
 end;
 
 procedure TMain.OpenBtnClick(Sender: TObject);
+var
+  Ini: TIniFile;
 begin
-  if OpenDialog.Execute then
-    LoadBackupPaths(OpenDialog.FileName);
+  if not OpenDialog.Execute then Exit;
+  LoadBackupPaths(OpenDialog.FileName);
+  Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Config.ini');
+  Ini.WriteString('Main', 'BackupFilesFolder', ExtractFilePath(OpenDialog.FileName)); // Сохраняем последний выбранный каталог
+  Ini.Free;
 end;
 
 procedure TMain.CBCheckLogClick(Sender: TObject);
@@ -993,7 +999,7 @@ var
   ItemDown, ItemUp: TListItem;
   ItemUpTitle, ItemUpPairFolders: string;
 begin
-  if (ListView.ItemIndex > 0) then begin
+  if ListView.ItemIndex > 0 then begin
     ItemUp:=ListView.Items.Item[ListView.ItemIndex - 1];
     ItemDown:=ListView.Items.Item[ListView.ItemIndex];
 
@@ -1039,8 +1045,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.8.5' + #13#10 +
-  ID_LAST_UPDATE + ' 01.12.2021' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.8.6' + #13#10 +
+  ID_LAST_UPDATE + ' 29.05.2023' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

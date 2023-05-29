@@ -18,7 +18,7 @@
 ![](https://user-images.githubusercontent.com/9499881/65590247-8709c480-df9b-11e9-8170-8da4b46f957a.png)
 
 ## Загрузка
->Версия для Windows 7, 8.1, 10.
+>Версия для Windows 7, 8.1, 10, 11.
 
 **[Загрузить](https://github.com/r57zone/EchoBackuper/releases)**
 
