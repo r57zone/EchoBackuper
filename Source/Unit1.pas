@@ -1157,8 +1157,6 @@ end;
 procedure TMain.StopBtnClick(Sender: TObject);
 begin
   StopRequest:=true;
-  RunBtn.Enabled:=true;
-  StopBtn.Enabled:=false;
 end;
 
 procedure TMain.UpBtnClick(Sender: TObject);
