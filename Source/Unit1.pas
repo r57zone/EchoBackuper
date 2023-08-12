@@ -211,7 +211,7 @@ begin
 
     if not GetFileSizeEx(SourceFile, SourceFileSize) then Exit;
 
-    if FileExists(TargetFileName) then DeleteFile(PChar(TargetFileName)); // Удаляем файл, если существует
+    if FileExists(TargetFileName) then if DeleteFile(PChar(TargetFileName)) = false then Exit; // Удаляем файл, если существует
 
     try
       TargetFile:=CreateFile(PChar(TargetFileName), GENERIC_WRITE, FILE_SHARE_WRITE or FILE_SHARE_READ, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
