@@ -1,5 +1,7 @@
 [![EN](https://user-images.githubusercontent.com/9499881/33184537-7be87e86-d096-11e7-89bb-f3286f752bc6.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.md) 
 [![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.RU.md)
+[![DE](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260246540-591e9ba8-2aea-4600-be8f-d23599998df9.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.DE.md)
+
 # EchoBackuper
 Приложение для создания резервных копий. Резервные копии создаются по принципу эха. Новые и обновлённые файлы копируются из оригинальной папки в резервную копию. Переименование, перемещение и удаление файлов происходит только в резервной копии.
 

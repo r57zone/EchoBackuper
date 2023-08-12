@@ -1,7 +1,7 @@
 [![EN](https://user-images.githubusercontent.com/9499881/33184537-7be87e86-d096-11e7-89bb-f3286f752bc6.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.md) 
 [![RU](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.RU.md)
-[![DE](https://github.com/uDEV2019/EchoBackuper/assets/51911097/dfcc4cc6-1421-45ed-bf8c-06f681390f44)](https://github.com/r57zone/EchoBackuper/blob/master/README.DE.md)
-&#8211; Other languages / Другие языки
+[![DE](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260246540-591e9ba8-2aea-4600-be8f-d23599998df9.png)](https://github.com/r57zone/EchoBackuper/blob/master/README.DE.md)
+&#8211; Other languages / Другие языки / Andere Sprachen
 
 # EchoBackuper
 Application for backups. Backups are created using the echo principle. New and updated files are copied from the original folder to the backup. Renaming, moving and deleting files occurs only in the backup.
