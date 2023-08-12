@@ -13,9 +13,8 @@
 ![](https://user-images.githubusercontent.com/9499881/65593028-c4bd1c00-dfa0-11e9-8baf-9f3bc571933e.png)
 
 ## Скриншоты
-![](https://user-images.githubusercontent.com/9499881/65589968-064ac880-df9b-11e9-8c06-794a877d05ff.png)
-
-![](https://user-images.githubusercontent.com/9499881/65590247-8709c480-df9b-11e9-8170-8da4b46f957a.png)
+[![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224551-28062e0d-e4dd-49cf-a4a6-ed5d2b61f5e7.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/20ba3b9b-1cc0-477c-bd5b-1c7624104a06)
+[![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224561-2ddde940-ca38-49de-af7f-fcf313da8f2e.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/d2803032-ff6b-47d1-a2a0-246dc1bcb35e)
 
 ## Загрузка
 >Версия для Windows 7, 8.1, 10, 11.

@@ -5,45 +5,58 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, ShlObj, Registry,
-  IniFiles, Vcl.Menus, ShellAPI;
+  IniFiles, Vcl.Menus, ShellAPI, IdHashCRC;
 
 type
   TMain = class(TForm)
     StatusBar: TStatusBar;
     RunBtn: TButton;
     ListView: TListView;
-    AddBtn: TButton;
     ProgressBar: TProgressBar;
-    RemBtn: TButton;
-    AboutBtn: TButton;
-    CBCheckLog: TCheckBox;
-    ExcludeBtn: TButton;
     StopBtn: TButton;
-    OpenBtn: TButton;
     OpenDialog: TOpenDialog;
-    CreateBtn: TButton;
     SaveDialog: TSaveDialog;
     ListViewPM: TPopupMenu;
     RemSelectionBtn: TMenuItem;
     ChooseAllBtn: TMenuItem;
-    LineNoneBtn: TMenuItem;
+    LineNoneBtn31: TMenuItem;
     OpenFolderBtn: TMenuItem;
     LeftFolderBtn: TMenuItem;
     RightFolderBtn: TMenuItem;
-    LineNoneBtn2: TMenuItem;
+    LineNoneBtn32: TMenuItem;
     MoveBtn: TMenuItem;
     UpBtn: TMenuItem;
     DownBtn: TMenuItem;
+    MainMenu: TMainMenu;
+    FileBtn: TMenuItem;
+    OpenBtn: TMenuItem;
+    CreateBtn: TMenuItem;
+    LineNoneBtn1: TMenuItem;
+    ExitBtn: TMenuItem;
+    OpenBtn2: TButton;
+    FoldersBtn: TMenuItem;
+    AddBtn: TMenuItem;
+    AddBtn2: TMenuItem;
+    LineNoneBtn33: TMenuItem;
+    LineNoneBtn3: TMenuItem;
+    RemBtn: TMenuItem;
+    LineNone4: TMenuItem;
+    RemBtn2: TMenuItem;
+    ExcludeBtn: TMenuItem;
+    HelpBtn: TMenuItem;
+    AboutBtn: TMenuItem;
+    ProgressBar2: TProgressBar;
+    CurOperationLbl: TLabel;
+    AllOperationsLbl: TLabel;
+    LineNoneBtn2: TMenuItem;
+    SettingsBtn: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
-    procedure AddBtnClick(Sender: TObject);
-    procedure RemBtnClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure AddBtn2Click(Sender: TObject);
+    procedure RemBtn2Click(Sender: TObject);
     procedure ListViewDblClick(Sender: TObject);
-    procedure ExcludeBtnClick(Sender: TObject);
     procedure StopBtnClick(Sender: TObject);
     procedure AboutBtnClick(Sender: TObject);
-    procedure CBCheckLogClick(Sender: TObject);
     procedure ListViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure OpenBtnClick(Sender: TObject);
@@ -57,6 +70,14 @@ type
     procedure RightFolderBtnClick(Sender: TObject);
     procedure UpBtnClick(Sender: TObject);
     procedure DownBtnClick(Sender: TObject);
+    procedure OpenBtn2Click(Sender: TObject);
+    procedure AddBtnClick(Sender: TObject);
+    procedure RemBtnClick(Sender: TObject);
+    procedure ExcludeBtnClick(Sender: TObject);
+    procedure SettingsBtnClick(Sender: TObject);
+    procedure ExitBtnClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     procedure LoadBackupPaths(FileName: string);
     { Private declarations }
@@ -75,9 +96,11 @@ var
   GoodMakeFoldersCounter, GoodRemoveFoldersCounter, BadCopyFilesCounter, BadMoveFilesCounter, BadRenameFilesCounter,
   BadDeleteFilesCounter, BadMakeFoldersCounter, BadRemoveFoldersCounter: integer;
 
-  StopRequest: boolean;
+  StopRequest: boolean; AllowAppClose: boolean = true; RequestCloseApp: boolean = false;
   SilentMode: boolean;
   NotificationApp: string;
+
+  CheckLogShow, CRCCopyCheck, WriteCreationDate, WriteAttributes: boolean;
 
   ID_LOOKING_CHANGES, ID_FILE_RENAMED, ID_FOUND_NEW_FILE, ID_FILE_UPDATED, ID_FOUND_OLD_FILE,
   ID_COPY_FILE, ID_MOVE_FILE, ID_RENAME_FILE, ID_REMOVE_FILE, ID_CREATE_FOLDER, ID_REMOVE_FOLDER, ID_CHECK_MOVE_FILES: string;
@@ -91,6 +114,8 @@ var
   ID_ABOUT_TITLE, ID_LAST_UPDATE: string;
   ID_EXCLUDE_TITLE, ID_SELECT_EXCLUDE_FOLDER, ID_OK, ID_CANCEL: string;
 
+  ID_VIEW_TASKS, ID_CHECKSUM_VERIFICATION_COPY, ID_COPY_CREATION_DATE, ID_COPY_FILE_ATTRIBUTES: string;
+
 const
   // Название файла путей для резеревной копии по умолчанию
   BACKUP_PATHS_FILE_NAME = 'BackupPaths.ebp';
@@ -102,7 +127,7 @@ implementation
 
 {$R *.dfm}
 
-uses Unit2, Unit3;
+uses Unit2, Unit3, Unit4;
 
 { TMain }
 
@@ -120,60 +145,118 @@ begin
   Main.StatusBar.SimpleText:=' ' + CutStr(Str, 80);
 end;
 
-{function FileSetCreatedDate(FileName: string; Age: Integer): Integer;
+function FileCreatedAge(const FileName: string): Integer;
+var
+  SearchRec: TSearchRec;
+  LocalTime: TFileTime;
+  DOSFileTime: DWORD;
+begin
+  Result:=-1;
+  if FindFirst(FileName, faAnyFile, SearchRec) = 0 then begin
+    FileTimeToLocalFileTime(SearchRec.FindData.ftCreationTime, LocalTime);
+    if FileTimeToDosDateTime(LocalTime,LongRec(DOSFileTime).Hi,LongRec(DOSFileTime).Lo) then
+      Result:=DOSFileTime;
+    FindClose(SearchRec);
+  end;
+end;
+
+function FileSetCreatedDate(FileName: string; Age: Integer): Integer;
 var
   SourceFile: THandle;
   LocalFileTime, FileTime: TFileTime;
 begin
-  SourceFile:=FileOpen(FileName, fmOpenWrite);
+  SourceFile:=FileOpen(FileName, fmOpenWrite or fmShareDenyNone);
   if SourceFile=THandle(-1) then
     Result:=GetLastError
-  else
-  if DosDateTimeToFileTime(LongRec(Age).Hi, LongRec(Age).Lo, LocalFileTime) and
-     LocalFileTimeToFileTime(LocalFileTime, FileTime) then begin
+  else if DosDateTimeToFileTime(LongRec(Age).Hi, LongRec(Age).Lo, LocalFileTime) and LocalFileTimeToFileTime(LocalFileTime, FileTime) then begin
     Result:=0;
     SetFileTime(SourceFile, @FileTime, nil, nil);
     FileClose(SourceFile);
   end;
 end;
 
-function CPFile(const SourceFileName, TargetFileName: string): boolean;
+function CalculateCRC32(const FileName: string): Cardinal;
+var
+  Stream: TFileStream;
+  Hash: TIdHashCRC32;
+begin
+  Result:=0;
+  Stream:=TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    Hash:=TIdHashCRC32.Create;
+    try
+      Result:=Hash.HashValue(Stream);
+    finally
+      Hash.Free;
+    end;
+  finally
+    Stream.Free;
+  end;
+end;
+
+function CPFile(const SourceFileName, TargetFileName: string): boolean; // Самостоятельное копирование файла
+const
+  BufferSize = 4096;
 var
   SourceFile, TargetFile: THandle;
-  NumRead, NumWritten, BufferSize: LongWord;
+  NumRead, NumWritten: LongWord; // DWORD тоже самое
   SourceFileSize, CopySize: int64;
-  Buffer: array[1..2048] of Char;
+  Buffer: array[0..BufferSize-1] of Byte;
   SameSizes: boolean;
 begin
   Result:=false;
   try
-    BufferSize:=SizeOf(Buffer);
-    SourceFile:=CreateFile(PAnsiChar(SourceFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-    if FileExists(TargetFileName) then DeleteFileA(PAnsiChar(TargetFileName));
-    TargetFile:=CreateFile(PAnsiChar(TargetFileName), GENERIC_WRITE, FILE_SHARE_WRITE or FILE_SHARE_READ, nil, CREATE_ALWAYS, FileGetAttr(SourceFileName), 0);
-    if TargetFile = INVALID_HANDLE_VALUE then begin
-      CloseHandle(SourceFile);
-      Exit;
+    SourceFile:=CreateFile(PChar(SourceFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    if SourceFile = INVALID_HANDLE_VALUE then Exit;
+
+    if not GetFileSizeEx(SourceFile, SourceFileSize) then Exit;
+
+    if FileExists(TargetFileName) then DeleteFile(PChar(TargetFileName)); // Удаляем файл, если существует
+
+    try
+      TargetFile:=CreateFile(PChar(TargetFileName), GENERIC_WRITE, FILE_SHARE_WRITE or FILE_SHARE_READ, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+      if TargetFile = INVALID_HANDLE_VALUE then begin
+        CloseHandle(SourceFile);
+        Exit;
+      end;
+
+      try
+        CopySize:=0;
+        Main.ProgressBar2.Position:=0;
+        repeat
+          if not ReadFile(SourceFile, Buffer, BufferSize, NumRead, nil) then break;
+          if not WriteFile(TargetFile, Buffer, NumRead, NumWritten, nil) then break;
+          CopySize:=CopySize + NumWritten; // Inc(CopySize, NumWritten);
+          StatusText(ID_COPY_FILE + ' ' + IntToStr(Trunc(CopySize / SourceFileSize * 100)) + '% - ' + SourceFileName);
+          Main.ProgressBar2.Position:=Trunc(CopySize / SourceFileSize * 100);
+          if StopRequest then break;
+          Application.ProcessMessages;
+        until (NumRead = 0) or (NumWritten <> NumRead);
+      finally
+        FileClose(TargetFile);
+        StatusText(ID_COPY_FILE + ' 100% - ' + SourceFileName);
+        Main.ProgressBar2.Max:=101; // Прогресс бар отображается с задержкой, поэтому такой обходной путь
+        Main.ProgressBar2.Position:=101;
+        Main.ProgressBar2.Max:=100;
+        SameSizes := (CopySize = SourceFileSize);  // Оверхед - if not GetFileSizeEx(TargetFile, TargetFileSize) then Exit; SameSizes:=(SourceFileSize = TargetFileSize);
+      end;
+    finally
+      FileClose(SourceFile);
     end;
-    SourceFileSize:=GetFileSize(SourceFile, nil);
-    CopySize:=0;
-    repeat
-      if not ReadFile(SourceFile, Buffer, BufferSize, NumRead, nil) then break;
-      if not WriteFile(TargetFile, Buffer, NumRead, NumWritten, nil) then break;
-      CopySize:=CopySize + NumWritten;
-      StatusText(ID_COPY_FILE + ' ' + IntToStr( Round( CopySize / (SourceFileSize / 100) ) ) + '% ' + SourceFileName);
-      if StopRequest then Break;
-      Application.ProcessMessages;
-    until (NumRead = 0) or (NumWritten <> NumRead);
   finally
-    SameSizes:=(SourceFileSize = GetFileSize(TargetFile, nil)); // Сравниваем размеры пока файлы открыты
-    FileClose(SourceFile);
-    FileClose(TargetFile);
-    if (SameSizes) and (FileSetDate( TargetFileName, FileAge(SourceFileName) ) = 0 ) then Result:=true;
-       //(FileSetCreatedDate( TargetFileName, FileAge(SourceFileName) ) = 0 ) then Result:=true;
-    if Result = false or StopRequest then DeleteFile(PAnsiChar(TargetFileName));
+    Application.ProcessMessages;
+
+    if (StopRequest = false) and (SameSizes) and (FileSetDate( TargetFileName, FileAge(SourceFileName) ) = 0) and
+       ( (WriteCreationDate = false) or (FileSetCreatedDate( TargetFileName, FileCreatedAge(SourceFileName) ) = 0) ) and
+       ( (CRCCopyCheck = false) or (CalculateCRC32(SourceFileName) = CalculateCRC32(TargetFileName)) ) and
+       ( (WriteAttributes = false) or (FileSetAttr(TargetFileName, FileGetAttr(SourceFileName)) = 0) ) then Result:=true; // Атрибуты присваиваем в последнюю очередь, потому что еще нужно обновить даты создания и изменения
+
   end;
-end;}
+
+  Main.ProgressBar2.Position:=0;
+
+  if (StopRequest) or (Result = false) then DeleteFile(PChar(TargetFileName));
+end;
 
 procedure CheckFilesDiff(LocalFolder, RemoteFolder: string);
 var
@@ -198,7 +281,7 @@ begin
   repeat
     Application.ProcessMessages;
 
-    if (LocalFile.Name = '.') or (LocalFile.Name = '..') then Continue;   //Не обрабатываем возвраты папок
+    if (LocalFile.Name = '.') or (LocalFile.Name = '..') then Continue;   // Не обрабатываем возвраты папок
 
     // Проверка файлов
     if (LocalFile.Attr and faDirectory) <> faDirectory then begin
@@ -390,6 +473,8 @@ begin
   Main.ProgressBar.Max:=Actions.Count;
   for i:=0 to Actions.Count - 1 do begin
 
+    Main.ProgressBar.Position:=i + 1;
+
     if StopRequest then Break;
 
     ActionStr:=Actions.Strings[i];
@@ -398,10 +483,10 @@ begin
       Delete(ActionStr, 1, 5);
       try
         StatusText(ID_COPY_FILE + ' ' + Copy(ActionStr, 1, Pos(#9, ActionStr) - 1));
-        if CopyFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
-                     PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ), false) then begin
-        {if CPFile( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1),
-                   Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) then begin}
+        //if CopyFile( PChar( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1) ),
+        //             PChar( Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ), false) then begin
+        if CPFile( Copy(ActionStr, 1, Pos(#9, ActionStr) - 1),
+                   Copy(ActionStr, Pos(#9, ActionStr) + 1, Length(ActionStr)) ) then begin
           Inc(GoodCopyFilesCounter);
           Actions.Strings[i]:='';
         end else
@@ -486,7 +571,7 @@ begin
       end;
     end;
 
-    Main.ProgressBar.Position:=i + 1;
+    if StopRequest then Main.ProgressBar.Position:=0;
   end;
 end;
 
@@ -517,9 +602,15 @@ var
   Ini: TIniFile; i: integer; CustomBackupFile: string;
 begin
   Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Config.ini');
-  CBCheckLog.Checked:=Ini.ReadBool('Main', 'LookTasks', true);
+  CheckLogShow:=Ini.ReadBool('Main', 'LookTasks', true);
   OpenDialog.InitialDir:=Ini.ReadString('Main', 'BackupFilesFolder', '');
+  CRCCopyCheck:=Ini.ReadBool('Main', 'CRCCopyCheck', false);
+  WriteCreationDate:=Ini.ReadBool('Main', 'WriteCreationDate', false);
+  WriteAttributes:=Ini.ReadBool('Main', 'WriteAttributes', false);
   Ini.Free;
+
+  //Width:=588;
+  //Height:=424;
 
   // Перевод
   if FileExists(ExtractFilePath(ParamStr(0)) + 'Languages\' + GetLocaleInformation(LOCALE_SENGLANGUAGE) + '.ini') then
@@ -536,17 +627,31 @@ begin
   MoveBtn.Caption:=Ini.ReadString('Main', 'ID_MOVE', '');
   UpBtn.Caption:=Ini.ReadString('Main', 'ID_UP', '');
   DownBtn.Caption:=Ini.ReadString('Main', 'ID_DOWN', '');
+  FileBtn.Caption:=Ini.ReadString('Main', 'ID_FILE', '');
   OpenFolderBtn.Caption:=Ini.ReadString('Main', 'ID_OPEN', '');
   LeftFolderBtn.Caption:=Ini.ReadString('Main', 'ID_LEFT_FOLDER', '');
   RightFolderBtn.Caption:=Ini.ReadString('Main', 'ID_RIGHT_FOLDER', '');
   RunBtn.Caption:=Ini.ReadString('Main', 'ID_RUN', '');
   CreateBtn.Caption:=Ini.ReadString('Main', 'ID_CREATE', '');
   OpenBtn.Caption:=OpenFolderBtn.Caption;
+  OpenBtn2.Caption:=OpenBtn.Caption;
+  ExitBtn.Caption:=Ini.ReadString('Main', 'ID_EXIT', '');
+  FoldersBtn.Caption:=Ini.ReadString('Main', 'ID_FOLDERS', '');
   AddBtn.Caption:=Ini.ReadString('Main', 'ID_ADD', '');
+  AddBtn2.Caption:=Ini.ReadString('Main', 'ID_ADD', '');
   RemBtn.Caption:=Ini.ReadString('Main', 'ID_REMOVE', '');
+  RemBtn2.Caption:=RemBtn.Caption;
   ExcludeBtn.Caption:=Ini.ReadString('Main', 'ID_EXCLUDE', '');
   StopBtn.Caption:=Ini.ReadString('Main', 'ID_STOP', '');
-  CBCheckLog.Caption:=Ini.ReadString('Main', 'ID_VIEW_TASKS', '');
+  AllOperationsLbl.Caption:=Ini.ReadString('Main', 'ID_ALL_OPERATIONS', '');
+  CurOperationLbl.Caption:=Ini.ReadString('Main', 'ID_CURRENT_OPERATION', '');
+  HelpBtn.Caption:=Ini.ReadString('Main', 'ID_HELP', '');
+
+  ID_VIEW_TASKS:=Ini.ReadString('Main', 'ID_VIEW_TASKS', '');
+  SettingsBtn.Caption:=Ini.ReadString('Main', 'ID_SETTINGS', '');
+  ID_CHECKSUM_VERIFICATION_COPY:=Ini.ReadString('Main', 'ID_CHECKSUM_VERIFICATION_COPY', '');
+  ID_COPY_CREATION_DATE:=Ini.ReadString('Main', 'ID_COPY_CREATION_DATE', '');
+  ID_COPY_FILE_ATTRIBUTES:=Ini.ReadString('Main', 'ID_COPY_FILE_ATTRIBUTES', '');
 
   ID_LOOKING_CHANGES:=Ini.ReadString('Main', 'ID_LOOKING_CHANGES', '');
   ID_FILE_RENAMED:=Ini.ReadString('Main', 'ID_FILE_RENAMED', '');
@@ -591,6 +696,9 @@ begin
   ID_SELECT_EXCLUDE_FOLDER:=Ini.ReadString('Main', 'ID_SELECT_EXCLUDE_FOLDER', '');
   ID_OK:=Ini.ReadString('Main', 'ID_OK', '');
   ID_CANCEL:=Ini.ReadString('Main', 'ID_CANCEL', '');
+
+  AboutBtn.Caption:=ID_ABOUT_TITLE;
+
   Ini.Free;
 
   Application.Title:=Caption;
@@ -626,19 +734,34 @@ begin
   ExcludeRenameFiles.Free;
 end;
 
+procedure TMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if SilentMode then Exit;
+  StopRequest:=true;
+  RequestCloseApp:=true;
+  CanClose:=AllowAppClose;
+end;
+
 procedure TMain.RunBtnClick(Sender: TObject);
 var
   i: integer;
   Item: TListItem;
   BackupStatusTitle: string;
+
+  SuccessOperationsText, FailOperationsText: string;
 begin
+  AllowAppClose:=false; // Запрещаем закрытие приложения
   StopRequest:=false;
   ProgressBar.Position:=0;
   RunBtn.Enabled:=false;
   CreateBtn.Enabled:=false;
   OpenBtn.Enabled:=false;
+  OpenBtn2.Enabled:=false;
   AddBtn.Enabled:=false;
+  AddBtn2.Enabled:=false;
+  SettingsBtn.Enabled:=false;
   RemBtn.Enabled:=false;
+  RemBtn2.Enabled:=false;
   ExcludeBtn.Enabled:=false;
   StopBtn.Enabled:=true;
   FilesCounter:=0;
@@ -679,7 +802,7 @@ begin
       StatusText(ID_PERFORM_OPERATIONS);
 
       // Подтверждение выполнения операций
-      if CBCheckLog.Checked then begin
+      if CheckLogShow then begin
 
           // Показываем логи
           LogsForm.Show;
@@ -717,21 +840,49 @@ begin
   RunBtn.Enabled:=true;
   CreateBtn.Enabled:=true;
   OpenBtn.Enabled:=true;
+  OpenBtn2.Enabled:=true;
   RunBtn.Enabled:=true;
   AddBtn.Enabled:=true;
+  AddBtn2.Enabled:=true;
+  SettingsBtn.Enabled:=true;
   RemBtn.Enabled:=true;
+  RemBtn2.Enabled:=true;
   ExcludeBtn.Enabled:=true;
-
   StopBtn.Enabled:=false;
+  ProgressBar2.Position:=0;
+  AllowAppClose:=true; // Разрешаем закрытие приложения
 
-  if SilentMode = false then begin
+  if (SilentMode = false) and (RequestCloseApp = false) then begin
 
     if (BadCopyFilesCounter = 0) and (BadMoveFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
       BackupStatusTitle:=ID_BACKUP_COMPLETED
     else
       BackupStatusTitle:=ID_BACKUP_FAILED;
 
+    SuccessOperationsText:='';
+    if GoodCopyFilesCounter > 0 then SuccessOperationsText:=ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10;
+    if GoodMoveFilesCounter > 0 then SuccessOperationsText:=SuccessOperationsText + ID_SUCCESS_MOVE_FILES + ' ' + IntToStr(GoodMoveFilesCounter) + #13#10;
+    if GoodRenameFilesCounter > 0 then SuccessOperationsText:=SuccessOperationsText + ID_SUCCESS_RENAME_FILES + ' ' + IntToStr(GoodRenameFilesCounter) + #13#10;
+    if GoodDeleteFilesCounter > 0 then SuccessOperationsText:=SuccessOperationsText + ID_SUCCESS_REMOVE_FILES + ' ' + IntToStr(GoodDeleteFilesCounter) + #13#10;
+    if GoodMakeFoldersCounter > 0 then SuccessOperationsText:=SuccessOperationsText + ID_SUCCESS_CREATE_FOLDERS + ' ' + IntToStr(GoodMakeFoldersCounter) + #13#10;
+    if GoodRemoveFoldersCounter > 0 then SuccessOperationsText:=SuccessOperationsText + ID_SUCCESS_REMOVE_FOLDERS + ' ' + IntToStr(GoodRemoveFoldersCounter);
+    if SuccessOperationsText <> '' then SuccessOperationsText:=#13#10#13#10 + Trim(SuccessOperationsText);
+    
+    FailOperationsText:='';
+    if BadCopyFilesCounter > 0 then FailOperationsText:=FailOperationsText + ID_FAIL_COPY_FILES + ' ' + IntToStr(BadCopyFilesCounter) + #13#10;
+    if BadMoveFilesCounter > 0 then FailOperationsText:=FailOperationsText + ID_FAIL_MOVE_FILES + ' ' + IntToStr(BadMoveFilesCounter) + #13#10;
+    if BadRenameFilesCounter > 0 then FailOperationsText:=FailOperationsText + ID_FAIL_RENAME_FILES + ' ' + IntToStr(BadRenameFilesCounter) + #13#10;
+    if BadDeleteFilesCounter > 0 then FailOperationsText:=FailOperationsText + ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10;
+    if BadMakeFoldersCounter > 0 then FailOperationsText:=FailOperationsText + ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10;
+    if BadRemoveFoldersCounter > 0 then FailOperationsText:=FailOperationsText + ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter);
+    if FailOperationsText <> '' then FailOperationsText:=#13#10#13#10 + Trim(FailOperationsText);
+    
     Application.MessageBox(PChar(BackupStatusTitle + #13#10 + #13#10 +
+                                 ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 + ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + 
+                                 SuccessOperationsText + FailOperationsText ),
+                            PChar(Caption), MB_ICONINFORMATION or MB_TOPMOST);
+    
+    {Application.MessageBox(PChar(BackupStatusTitle + #13#10 + #13#10 +
                                  ID_CHECK_FILES + ' ' + IntToStr(FilesCounter) + #13#10 + ID_TOTAL_OPERATIONS + ' ' + IntToStr(ActionGoodCounter) + #13#10#13#10 +
                                  ID_SUCCESS_COPY_FILES + ' ' + IntToStr(GoodCopyFilesCounter) + #13#10 +
                                  ID_SUCCESS_MOVE_FILES + ' ' + IntToStr(GoodMoveFilesCounter) + #13#10 +
@@ -745,7 +896,7 @@ begin
                                  ID_FAIL_REMOVE_FILES + ' ' + IntToStr(BadDeleteFilesCounter) + #13#10 +
                                  ID_FAIL_CREATE_FOLDERS + ' ' + IntToStr(BadMakeFoldersCounter) + #13#10 +
                                  ID_FAIL_REMOVE_FOLDERS + ' ' + IntToStr(BadRemoveFoldersCounter) ),
-                            PChar(Caption), MB_ICONINFORMATION or MB_TOPMOST);
+                            PChar(Caption), MB_ICONINFORMATION or MB_TOPMOST);}
 
     if Actions.Count > 0 then begin // Выводим проблемные операции
       LogsForm.Show;
@@ -755,15 +906,15 @@ begin
       LogsForm.LogsMemo.Text:=Actions.Text;
     end;
 
-
   end else if Trim(NotificationApp) <> '' then begin
 
     if (BadCopyFilesCounter = 0) and (BadMoveFilesCounter = 0) and (BadDeleteFilesCounter = 0) and (BadRenameFilesCounter = 0) and (BadRemoveFoldersCounter = 0) then
-      WinExec(PAnsiChar(NotificationApp + ' -t "' + Caption + '" -d "' + ID_SUCCESS_NOTIFICATION_MESSAGE + '" -b EchoBackaper.png -c 1'), SW_SHOWNORMAL)
+      ShellExecute(0, 'open', PChar(NotificationApp), PChar('-t "' + Caption + '" -d "' + ID_SUCCESS_NOTIFICATION_MESSAGE + '" -b EchoBackaper.png -c 1'), nil, SW_SHOWNORMAL)
     else
-      WinExec(PAnsiChar(NotificationApp + ' -t "' + Caption + '" -d "' + ID_FAIL_NOTIFICATION_MESSAGE + '" -b EchoBackaper.png -c 1'), SW_SHOWNORMAL);
-
+      ShellExecute(0, 'open', PChar(NotificationApp), PChar('-t "' + Caption + '" -d "' + ID_FAIL_NOTIFICATION_MESSAGE + '" -b EchoBackaper.png -c 1'), nil, SW_SHOWNORMAL);
   end;
+
+  if RequestCloseApp then Close;
 end;
 
 function TMain.BrowseFolderDialog(Title: PChar): string;
@@ -788,6 +939,11 @@ begin
   end;
 end;
 
+procedure TMain.OpenBtn2Click(Sender: TObject);
+begin
+  OpenBtn.Click;
+end;
+
 procedure TMain.OpenBtnClick(Sender: TObject);
 var
   Ini: TIniFile;
@@ -799,18 +955,9 @@ begin
   Ini.Free;
 end;
 
-procedure TMain.CBCheckLogClick(Sender: TObject);
-var
-  Ini: TIniFile;
-begin
-  Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Config.ini');
-  Ini.WriteBool('Main', 'LookTasks', CBCheckLog.Checked);
-  Ini.Free;
-end;
-
 procedure TMain.CreateBtnClick(Sender: TObject);
 begin
-  if SaveDialog.Execute then begin
+   if SaveDialog.Execute then begin
     CurrentBackupFilePath:=SaveDialog.FileName;
     // Очищаем текущие пути
     ListView.Clear;
@@ -864,6 +1011,16 @@ begin
   BackupPaths.Free;
 end;
 
+procedure TMain.ExcludeBtnClick(Sender: TObject);
+begin
+  ExcludeFoldersForm.ShowModal;
+end;
+
+procedure TMain.ExitBtnClick(Sender: TObject);
+begin
+  Close;
+end;
+
 procedure TMain.SaveBackupPaths;
 var
   i: integer;
@@ -887,6 +1044,16 @@ begin
   BackupPaths.Free;
 end;
 
+procedure TMain.SettingsBtnClick(Sender: TObject);
+begin
+  Settings.ShowModal;
+end;
+
+procedure TMain.AddBtn2Click(Sender: TObject);
+begin
+  AddBtn.Click;
+end;
+
 procedure TMain.AddBtnClick(Sender: TObject);
 var
   Item: TListItem; NameFolders, LeftFolder, RightFolder: string;
@@ -902,19 +1069,24 @@ begin
 
     if LeftFolder <> '' then
       RightFolder:=BrowseFolderDialog(PChar(ID_CHOOSE_RIGHT_FOLDER));
-  end;
+  end else
+    Exit; // Выходим если название не введено
 
-  if (Trim(NameFolders) <> '') and (LeftFolder <> '') and (RightFolder <> '') then begin
+  if (LeftFolder <> '') and (RightFolder <> '') then begin
     Item:=Main.ListView.Items.Add;
     Item.Caption:='';
     Item.SubItems.Add(NameFolders);
     Item.SubItems.Add(LeftFolder);
     Item.SubItems.Add(RightFolder);
     Item.Checked:=true;
+    SaveBackupPaths;
   end else
     Application.MessageBox(PChar(ID_CHOOSE_FOLDER_ERROR), PChar(Caption), MB_ICONERROR);
+end;
 
-  SaveBackupPaths;
+procedure TMain.RemBtn2Click(Sender: TObject);
+begin
+  RemBtn.Click;
 end;
 
 procedure TMain.RemBtnClick(Sender: TObject);
@@ -982,11 +1154,6 @@ begin
     ListViewPM.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
 
-procedure TMain.ExcludeBtnClick(Sender: TObject);
-begin
-  ExcludeFoldersForm.ShowModal;
-end;
-
 procedure TMain.StopBtnClick(Sender: TObject);
 begin
   StopRequest:=true;
@@ -1045,8 +1212,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.8.6' + #13#10 +
-  ID_LAST_UPDATE + ' 29.05.2023' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.9' + #13#10 +
+  ID_LAST_UPDATE + ' 12.08.2023' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

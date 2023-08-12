@@ -15,9 +15,8 @@ Application for backups. Backups are created using the echo principle. New and u
 ![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
 
 ## Screenshots
-![](https://user-images.githubusercontent.com/9499881/68482602-5fbd3d00-0253-11ea-9b65-9830fcda9c04.png)
-
-![](https://user-images.githubusercontent.com/9499881/65594220-5e85c880-dfa3-11e9-87c8-9b5648893299.png)
+[![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224440-d6362d7c-3cf0-47d2-9aaf-6b3b7d823b75.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/a42082e5-e67e-4640-8484-a253eda65329)
+[![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224456-38066115-c0ba-445d-9ded-86bb98de617c.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/b973da26-7da7-4c2b-b6a4-9dccf418c8a8)
 
 ## Download
 >Version for Windows 7, 8.1, 10, 11.
