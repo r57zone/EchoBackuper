@@ -100,7 +100,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Icon_MainIcon>Project1_Icon.ico</Icon_MainIcon>
         <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=Application for backups;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.r57zone.echobackuper;ProductName=EchoBackuper;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=EchoBackuper;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.r57zone.echobackuper;ProductName=EchoBackuper;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
