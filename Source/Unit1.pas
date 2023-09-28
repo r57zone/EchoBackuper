@@ -224,7 +224,7 @@ begin
         CopySize:=0;
         Main.ProgressBar2.Position:=0;
         repeat
-          if not ReadFile(SourceFile, Buffer, BufferSize, NumRead, nil) then break;
+          if (not ReadFile(SourceFile, Buffer, BufferSize, NumRead, nil)) or (NumRead = 0) then break; // NumRead = 0 для пустых файлов
           if not WriteFile(TargetFile, Buffer, NumRead, NumWritten, nil) then break;
           CopySize:=CopySize + NumWritten; // Inc(CopySize, NumWritten);
           StatusText(ID_COPY_FILE + ' ' + IntToStr(Trunc(CopySize / SourceFileSize * 100)) + '% - ' + SourceFileName);
@@ -1210,8 +1210,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 0.9' + #13#10 +
-  ID_LAST_UPDATE + ' 12.08.2023' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 0.9.1' + #13#10 +
+  ID_LAST_UPDATE + ' 28.09.2023' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(ID_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

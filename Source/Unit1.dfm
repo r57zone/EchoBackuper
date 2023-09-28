@@ -97,6 +97,7 @@ object Main: TMain
     Width = 75
     Height = 25
     Caption = #1054#1089#1090#1072#1085#1086#1074#1080#1090#1100
+    Enabled = False
     TabOrder = 3
     OnClick = StopBtnClick
   end
@@ -124,11 +125,11 @@ object Main: TMain
   object SaveDialog: TSaveDialog
     DefaultExt = 'Backup paths|*.ebp'
     Filter = 'Backup paths|*.ebp'
-    Left = 96
+    Left = 104
     Top = 40
   end
   object ListViewPM: TPopupMenu
-    Left = 160
+    Left = 176
     Top = 40
     object RemSelectionBtn: TMenuItem
       Caption = #1057#1085#1103#1090#1100' '#1074#1099#1076#1077#1083#1077#1085#1080#1077
@@ -179,7 +180,7 @@ object Main: TMain
     end
   end
   object MainMenu: TMainMenu
-    Left = 224
+    Left = 248
     Top = 40
     object FileBtn: TMenuItem
       Caption = #1060#1072#1081#1083
