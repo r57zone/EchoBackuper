@@ -4,8 +4,8 @@ object Settings: TSettings
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 166
-  ClientWidth = 371
+  ClientHeight = 165
+  ClientWidth = 367
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,14 +18,12 @@ object Settings: TSettings
   TextHeight = 15
   object PanelBtns: TPanel
     Left = 0
-    Top = 125
-    Width = 371
+    Top = 124
+    Width = 367
     Height = 41
     Align = alBottom
     BevelOuter = bvSpace
     TabOrder = 4
-    ExplicitTop = 124
-    ExplicitWidth = 367
     object OkBtn: TButton
       Left = 8
       Top = 8

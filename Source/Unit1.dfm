@@ -41,8 +41,8 @@ object Main: TMain
     ParentShowHint = False
     ShowHint = True
     SimplePanel = True
-    ExplicitTop = 346
-    ExplicitWidth = 572
+    ExplicitTop = 344
+    ExplicitWidth = 574
   end
   object RunBtn: TButton
     Left = 88
@@ -153,11 +153,18 @@ object Main: TMain
         OnClick = RightFolderBtnClick
       end
     end
+    object LineNoneBtn32: TMenuItem
+      Caption = '-'
+    end
     object AddBtn2: TMenuItem
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
       OnClick = AddBtn2Click
     end
-    object LineNoneBtn32: TMenuItem
+    object EditBtn2: TMenuItem
+      Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+      OnClick = EditBtn2Click
+    end
+    object LineNoneBtn33: TMenuItem
       Caption = '-'
     end
     object MoveBtn: TMenuItem
@@ -171,7 +178,7 @@ object Main: TMain
         OnClick = DownBtnClick
       end
     end
-    object LineNoneBtn33: TMenuItem
+    object LineNoneBtn34: TMenuItem
       Caption = '-'
     end
     object RemBtn2: TMenuItem
@@ -214,15 +221,20 @@ object Main: TMain
       Caption = #1055#1072#1087#1082#1080
       object AddBtn: TMenuItem
         Caption = #1044#1086#1073#1072#1074#1080#1090#1100
-        ShortCut = 16449
+        ShortCut = 24641
         OnClick = AddBtnClick
+      end
+      object EditBtn: TMenuItem
+        Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+        ShortCut = 24653
+        OnClick = EditBtnClick
       end
       object LineNoneBtn3: TMenuItem
         Caption = '-'
       end
       object ExcludeBtn: TMenuItem
         Caption = #1048#1089#1082#1083#1102#1095#1080#1090#1100
-        ShortCut = 16453
+        ShortCut = 24645
         OnClick = ExcludeBtnClick
       end
       object LineNone4: TMenuItem
@@ -230,7 +242,7 @@ object Main: TMain
       end
       object RemBtn: TMenuItem
         Caption = #1059#1076#1072#1083#1080#1090#1100
-        ShortCut = 16466
+        ShortCut = 24658
         OnClick = RemBtnClick
       end
     end
@@ -238,6 +250,7 @@ object Main: TMain
       Caption = #1057#1087#1088#1072#1074#1082#1072
       object AboutBtn: TMenuItem
         Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077'...'
+        ShortCut = 112
         OnClick = AboutBtnClick
       end
     end

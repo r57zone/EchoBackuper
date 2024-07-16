@@ -62,13 +62,13 @@ end;
 procedure TSettings.FormCreate(Sender: TObject);
 begin
   Caption:=Main.SettingsBtn.Caption;
-  CheckLogCB.Caption:=ID_VIEW_TASKS;
-  OkBtn.Caption:=ID_OK;
-  CancelBtn.Caption:=ID_CANCEL;
+  CheckLogCB.Caption:=IDS_VIEW_TASKS;
+  OkBtn.Caption:=IDS_OK;
+  CancelBtn.Caption:=IDS_CANCEL;
 
-  CheckSumVerificationCopyCB.Caption:=ID_CHECKSUM_VERIFICATION_COPY;
-  CopyCreationDateCB.Caption:=ID_COPY_CREATION_DATE;
-  CopyFileAttrCB.Caption:=ID_COPY_FILE_ATTRIBUTES;
+  CheckSumVerificationCopyCB.Caption:=IDS_CHECKSUM_VERIFICATION_COPY;
+  CopyCreationDateCB.Caption:=IDS_COPY_CREATION_DATE;
+  CopyFileAttrCB.Caption:=IDS_COPY_FILE_ATTRIBUTES;
 end;
 
 procedure TSettings.FormShow(Sender: TObject);

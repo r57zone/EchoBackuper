@@ -3,8 +3,8 @@ object ExcludeFoldersForm: TExcludeFoldersForm
   Top = 0
   BorderStyle = bsSingle
   Caption = #1048#1089#1082#1083#1102#1095#1077#1085#1080#1077' '#1087#1072#1087#1086#1082
-  ClientHeight = 297
-  ClientWidth = 378
+  ClientHeight = 296
+  ClientWidth = 374
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,26 +18,26 @@ object ExcludeFoldersForm: TExcludeFoldersForm
   object ListBox: TListBox
     Left = 0
     Top = 0
-    Width = 378
-    Height = 256
+    Width = 374
+    Height = 255
     Align = alClient
     ItemHeight = 13
     TabOrder = 0
     OnKeyDown = ListBoxKeyDown
     OnMouseDown = ListBoxMouseDown
-    ExplicitWidth = 374
-    ExplicitHeight = 255
+    ExplicitWidth = 370
+    ExplicitHeight = 254
   end
   object Panel: TPanel
     Left = 0
-    Top = 256
-    Width = 378
+    Top = 255
+    Width = 374
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 255
-    ExplicitWidth = 374
+    ExplicitTop = 254
+    ExplicitWidth = 370
     object OKBtn: TButton
       Left = 8
       Top = 8
@@ -64,6 +64,10 @@ object ExcludeFoldersForm: TExcludeFoldersForm
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
       OnClick = AddBtn2Click
     end
+    object EditBtn2: TMenuItem
+      Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+      OnClick = EditBtn2Click
+    end
     object LineNoneBtn: TMenuItem
       Caption = '-'
     end
@@ -79,6 +83,7 @@ object ExcludeFoldersForm: TExcludeFoldersForm
       Caption = #1060#1072#1081#1083
       object ExitBtn: TMenuItem
         Caption = #1042#1099#1093#1086#1076
+        ShortCut = 32883
         OnClick = ExitBtnClick
       end
     end
@@ -86,12 +91,20 @@ object ExcludeFoldersForm: TExcludeFoldersForm
       Caption = #1055#1072#1087#1082#1080
       object AddBtn: TMenuItem
         Caption = #1044#1086#1073#1072#1074#1080#1090#1100
-        ShortCut = 16449
+        ShortCut = 24641
         OnClick = AddBtnClick
+      end
+      object EditBtn: TMenuItem
+        Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+        ShortCut = 24653
+        OnClick = EditBtnClick
+      end
+      object N1: TMenuItem
+        Caption = '-'
       end
       object RemBtn: TMenuItem
         Caption = #1059#1076#1072#1083#1080#1090#1100
-        ShortCut = 16466
+        ShortCut = 24658
         OnClick = RemBtnClick
       end
     end

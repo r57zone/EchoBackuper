@@ -22,6 +22,9 @@ type
     FoldersBtn: TMenuItem;
     AddBtn: TMenuItem;
     RemBtn: TMenuItem;
+    EditBtn: TMenuItem;
+    N1: TMenuItem;
+    EditBtn2: TMenuItem;
     procedure AddBtn2Click(Sender: TObject);
     procedure RemBtn2Click(Sender: TObject);
     procedure OKBtnClick(Sender: TObject);
@@ -34,6 +37,8 @@ type
     procedure AddBtnClick(Sender: TObject);
     procedure RemBtnClick(Sender: TObject);
     procedure ExitBtnClick(Sender: TObject);
+    procedure EditBtnClick(Sender: TObject);
+    procedure EditBtn2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -76,14 +81,29 @@ procedure TExcludeFoldersForm.AddBtnClick(Sender: TObject);
 var
   ExcludePath: string;
 begin
-  ExcludePath:=Main.BrowseFolderDialog(PChar(ID_SELECT_EXCLUDE_FOLDER));
-  if ExcludePath <> '' then
+  ExcludePath:=Main.BrowseFolderDialog(PChar(IDS_SELECT_EXCLUDE_FOLDER));
+  if (ExcludePath <> '') and (Pos(ExcludePath + #13#10, ListBox.Items.Text) = 0) then
     ListBox.Items.Add(ExcludePath);
 end;
 
 procedure TExcludeFoldersForm.CancelBtnClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TExcludeFoldersForm.EditBtn2Click(Sender: TObject);
+begin
+  EditBtn.Click;
+end;
+
+procedure TExcludeFoldersForm.EditBtnClick(Sender: TObject);
+var
+  ExcludePath: string;
+begin
+  if ListBox.ItemIndex = -1 then Exit;
+  ExcludePath:=Main.BrowseFolderDialog(PChar(IDS_SELECT_EXCLUDE_FOLDER));
+  if (ExcludePath <> '') and (Pos(ExcludePath + #13#10, ListBox.Items.Text) = 0) then
+    ListBox.Items.Strings[ListBox.ItemIndex]:=ExcludePath;
 end;
 
 procedure TExcludeFoldersForm.ExitBtnClick(Sender: TObject);
@@ -94,16 +114,18 @@ end;
 procedure TExcludeFoldersForm.FormCreate(Sender: TObject);
 begin
   ListBox.Items.Text:=ExcludePaths.Text;
-  Caption:=ID_EXCLUDE_TITLE;
+  Caption:=IDS_EXCLUDE_TITLE;
   FileBtn.Caption:=Main.FileBtn.Caption;
   ExitBtn.Caption:=Main.ExitBtn.Caption;
   FoldersBtn.Caption:=Main.FoldersBtn.Caption;
   AddBtn.Caption:=Main.AddBtn.Caption;
   AddBtn2.Caption:=AddBtn.Caption;
+  EditBtn.Caption:=Main.EditBtn.Caption;
+  EditBtn2.Caption:=EditBtn.Caption;
   RemBtn.Caption:=Main.RemBtn.Caption;
   RemBtn2.Caption:=RemBtn.Caption;
-  OkBtn.Caption:=ID_OK;
-  CancelBtn.Caption:=ID_CANCEL;
+  OkBtn.Caption:=IDS_OK;
+  CancelBtn.Caption:=IDS_CANCEL;
 end;
 
 procedure TExcludeFoldersForm.ListBoxKeyDown(Sender: TObject; var Key: Word;
