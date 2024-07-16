@@ -8,9 +8,9 @@ Anwendung für Backups. Backups werden nach dem Echo-Prinzip erstellt. Neue und 
 ## Silent Mode
 >EchoBackuper.exe -b "BackupPaths.ebp" -s
 
-"**-b** backup_ext_hdd.ebp" - Eine andere Liste von Paar- und Ausschlussordnern laden. Die „ebp“-Dateien werden im Programm selbst erstellt.
+`-b backup_ext_hdd.ebp` - Eine andere Liste von Paar- und Ausschlussordnern laden. Die „ebp“-Dateien werden im Programm selbst erstellt.
 
-"**-s**" - ller Modus mit abschließender Benachrichtigung. Für Benachrichtigungen müssen Sie die Anwendung ["Notifications"](https://github.com/r57zone/notifications) herunterladen, unter „Programme“ (Program Files) entpacken und führen Sie es einmal aus.
+`-s` - ller Modus mit abschließender Benachrichtigung. Für Benachrichtigungen müssen Sie die Anwendung [Notifications](https://github.com/r57zone/notifications) herunterladen, unter „Programme“ (Program Files) entpacken und führen Sie es einmal aus.
 
 ![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
 
