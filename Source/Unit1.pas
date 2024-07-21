@@ -280,13 +280,15 @@ begin
   if (StopRequest) or (Result = false) then DeleteFile(PChar(TargetFileName));
 end;
 
-procedure AddFileSystemAction(const ActionType: TFSOperation; FirstPath, SecondPath: string; FirstFileSize, FirstFileTime: int64);
+procedure AddFSAction(const ActionType: TFSOperation; FirstPath, SecondPath: string; FirstFileSize: int64; FirstFileTime: integer);
 var
   NewAction: TFSAction;
 begin
   NewAction.ActionType:=ActionType;
   NewAction.FirstPath:=FirstPath;
   NewAction.SecondPath:=SecondPath;
+  NewAction.FirstFileSize:=FirstFileSize;
+  NewAction.FirstFileTime:=FirstFileTime;
   FSActions.Add(NewAction);
 end;
 
@@ -353,7 +355,7 @@ begin
           // Файл переименован
           if (LocalFile.Time = RemoteFile.Time) and (LocalFile.Size = RemoteFile.Size) and (FileExists(LocalFolder + RemoteFile.Name) = false) then begin
             //Actions.Add('RENAME ' + RemoteFolder + RemoteFile.Name + #9 + RemoteFolder + LocalFile.Name);
-            AddFileSystemAction(ID_OPERATION_RENAME, RemoteFolder + RemoteFile.Name, RemoteFolder + LocalFile.Name, 0, 0);
+            AddFSAction(ID_OPERATION_RENAME, RemoteFolder + RemoteFile.Name, RemoteFolder + LocalFile.Name, 0, 0);
             // Добавляем в список игнориемых файлов, чтобы он не удалился (до переименования)
             ExcludeRenameFiles.Add(RemoteFolder + RemoteFile.Name);
             StatusText(IDS_FILE_RENAMED + ' ' + LocalFolder + LocalFile.Name);
@@ -368,7 +370,7 @@ begin
         // Найден новый файл
         if FoundCurrentFile = false then begin
           //Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
-          AddFileSystemAction(ID_OPERATION_COPY, LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name, LocalFile.Size, LocalFile.Time);
+          AddFSAction(ID_OPERATION_COPY, LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name, LocalFile.Size, LocalFile.Time);
           StatusText(IDS_FOUND_NEW_FILE + ' ' + LocalFolder + LocalFile.Name);
         end;
 
@@ -379,7 +381,7 @@ begin
           // Файл обновлён
           if (LocalFile.Time <> RemoteFile.Time) or (LocalFile.Size <> RemoteFile.Size) then begin
             //Actions.Add('COPY ' + LocalFolder + LocalFile.Name + #9 + RemoteFolder + LocalFile.Name);
-            AddFileSystemAction(ID_OPERATION_COPY, LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name, LocalFile.Size, LocalFile.Time);
+            AddFSAction(ID_OPERATION_COPY, LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name, LocalFile.Size, LocalFile.Time);
             StatusText(IDS_FILE_UPDATED + ' ' + LocalFolder + LocalFile.Name);
           end;
 
@@ -391,7 +393,7 @@ begin
       // Создаём папку если её не существует и её нет в списке игнорируемых
       if (not DirectoryExists(RemoteFolder + LocalFile.Name)) and (Pos(LocalFolder + LocalFile.Name, ExcludePaths.Text) = 0) then
         //Actions.Add('MKDIR ' + RemoteFolder + LocalFile.Name);
-        AddFileSystemAction(ID_OPERATION_MKDIR, RemoteFolder + LocalFile.Name, '', 0, 0);
+        AddFSAction(ID_OPERATION_MKDIR, RemoteFolder + LocalFile.Name, '', 0, 0);
 
       // Сравниваем файлы
       CheckFilesDiff(LocalFolder + LocalFile.Name, RemoteFolder + LocalFile.Name);
@@ -427,7 +429,7 @@ begin
         // Найден старый файл
         if (FileExists(LocalFolder + RemoteFile.Name) = false) and (Pos(RemoteFolder + RemoteFile.Name, ExcludeRenameFiles.Text) = 0) then begin
           //Actions.Add('DELETE ' + RemoteFolder + RemoteFile.Name);
-          AddFileSystemAction(ID_OPERATION_DELETE, RemoteFolder + RemoteFile.Name, '', RemoteFile.Size, RemoteFile.Time);
+          AddFSAction(ID_OPERATION_DELETE, RemoteFolder + RemoteFile.Name, '', RemoteFile.Size, RemoteFile.Time);
           StatusText(IDS_FOUND_OLD_FILE + ' ' + RemoteFolder + RemoteFile.Name);
         end;
 
@@ -437,7 +439,7 @@ begin
         // После проверки файлов проверяем наличие папки
         if not DirectoryExists(LocalFolder + RemoteFile.Name) then
           //Actions.Add('RMDIR ' + RemoteFolder + RemoteFile.Name);
-          AddFileSystemAction(ID_OPERATION_RMDIR, RemoteFolder + RemoteFile.Name, '', 0, 0);
+          AddFSAction(ID_OPERATION_RMDIR, RemoteFolder + RemoteFile.Name, '', 0, 0);
       end;
     until FindNext(RemoteFile) <> 0;
 
@@ -445,7 +447,7 @@ begin
 end;
 
 // Сравнение двух файлов на соотвествие, по дате и размеру
-function CompareFileIdentity(FirstFilePath, SecondFilePath: string): boolean;
+{function CompareFileIdentity(FirstFilePath, SecondFilePath: string): boolean;
 var
   FirstFile, SecondFile: TSearchRec;
 begin
@@ -462,7 +464,7 @@ begin
 
     FindClose(FirstFile);
   end;
-end;
+end;}
 
 procedure TMain.CheckRemoteFilesToMove; // Если файл был перемещён в другую папку, то перемещаем файл, а не удаляем и копируем снова
 var
@@ -501,8 +503,9 @@ begin
 
           // Сравнение двух файлов на соотвествие, по дате и размеру
           //if CompareFileIdentity(DeleteFilePath, FirstCopyFilePath) then begin
-          if CompareFileIdentity(FSActions[i].FirstPath, FSActions[j].FirstPath) then begin // новое
-          //if (FSActions[i].FirstFileTime = FSActions[j].FirstFileTime) and (FSActions[i].FirstFileSize = FSActions[j].FirstFileSize) then begin
+          //if CompareFileIdentity(FSActions[i].FirstPath, FSActions[j].FirstPath) then begin // новое
+
+          if (FSActions[i].FirstFileTime = FSActions[j].FirstFileTime) and (FSActions[i].FirstFileSize = FSActions[j].FirstFileSize) then begin
 
             EdiTFSAction(j, ID_OPERATION_MOVE, FSActions[i].FirstPath, FSActions[j].SecondPath);
             EdiTFSAction(i, ID_OPERATION_NONE, '', '');
@@ -1372,8 +1375,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 1.0' + #13#10 +
-  IDS_LAST_UPDATE + ' 16.07.24' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 1.0.1' + #13#10 +
+  IDS_LAST_UPDATE + ' 21.07.24' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(IDS_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

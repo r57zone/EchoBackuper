@@ -41,8 +41,8 @@ object Main: TMain
     ParentShowHint = False
     ShowHint = True
     SimplePanel = True
-    ExplicitTop = 344
-    ExplicitWidth = 574
+    ExplicitTop = 346
+    ExplicitWidth = 572
   end
   object RunBtn: TButton
     Left = 88
