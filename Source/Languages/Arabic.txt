@@ -1,0 +1,89 @@
+# Main
+ACTIVE=نشط
+NAME=الاسم
+LEFT_FOLDER=المجلد الأيسر
+RIGHT_FOLDER=المجلد الأيمن
+REM_SELECTION=إلغاء التحديد
+SELECT_ALL=اختيار الكل
+MOVE=نقل
+UP=أعلى
+DOWN=أسفل
+RUN=تشغيل
+FILE=ملف
+CREATE=إنشاء
+OPEN=فتح
+EXIT=خروج
+FOLDERS=المجلدات
+ADD=إضافة
+EDIT=تعديل
+REMOVE=إزالة
+EXCLUDE=استبعاد
+STOP=إيقاف
+ALL_OPERATIONS=جميع العمليات:
+CURRENT_OPERATION=العملية الحالية:
+HELP=مساعدة
+FILE_DIALOG_FILTER=مسارات النسخ الاحتياطي|*.ebp
+
+# Settings
+SETTINGS=الإعدادات
+VIEW_TASKS=عرض المهام قبل العمليات
+CHECKSUM_VERIFICATION_COPY=التحقق من المجموع الاختباري بعد النسخ
+COPY_CREATION_DATE=الحفاظ على تاريخ إنشاء الملفات عند النسخ
+COPY_FILE_ATTRIBUTES=الحفاظ على سمات الملفات عند النسخ
+
+# Statuses
+LOOKING_CHANGES=البحث عن التغييرات في
+FILE_RENAMED=تم إعادة تسمية الملف:
+FOUND_NEW_FILE=تم العثور على ملف جديد:
+FILE_UPDATED=تم تحديث الملف:
+FOUND_OLD_FILE=تم العثور على ملف قديم:
+COPY_FILE=تم نسخ الملف:
+MOVE_FILE=تم نقل الملف:
+RENAME_FILE=تم إعادة تسمية الملف:
+REMOVE_FILE=تم حذف الملف:
+CREATE_FOLDER=تم إنشاء المجلد:
+REMOVE_FOLDER=تم حذف المجلد:
+CHECK_MOVE_FILES=التحقق من الملفات للنقل...
+
+COMPLETED=مكتمل
+COMPLETED_ERROR=مكتمل مع أخطاء
+BACKUP_COMPLETED=تم إتمام النسخ الاحتياطي بنجاح.
+BACKUP_FAILED=حدثت مشكلة أثناء إنشاء النسخ الاحتياطي.
+CHECK_FILES=الملفات التي تم فحصها:
+TOTAL_OPERATIONS=إجمالي العمليات:
+SUCCESS_COPY_FILES=الملفات المنسوخة بنجاح:
+SUCCESS_MOVE_FILES=الملفات المنقولة بنجاح:
+SUCCESS_RENAME_FILES=الملفات المعاد تسميتها بنجاح:
+SUCCESS_REMOVE_FILES=الملفات المحذوفة بنجاح:
+SUCCESS_CREATE_FOLDERS=المجلدات المنشأة بنجاح:
+SUCCESS_REMOVE_FOLDERS=المجلدات المحذوفة بنجاح:
+FAIL_COPY_FILES=فشل في نسخ الملفات:
+FAIL_MOVE_FILES=فشل في نقل الملفات:
+FAIL_RENAME_FILES=فشل في إعادة تسمية الملفات:
+FAIL_REMOVE_FILES=فشل في حذف الملفات:
+FAIL_CREATE_FOLDERS=فشل في إنشاء المجلدات:
+FAIL_REMOVE_FOLDERS=فشل في حذف المجلدات:
+
+# Messages
+PERFORM_OPERATIONS=هل تريد تنفيذ العمليات؟
+ENTER_NAME_PAIR_FOLDERS=أدخل اسم المجلدين المرتبطين:
+CHOOSE_LEFT_FOLDER=اختر المجلد الأيسر
+CHOOSE_RIGHT_FOLDER=اختر المجلد الأيمن
+CHOOSE_FOLDER_ERROR=تم اختيار المجلدات بشكل غير صحيح
+SUCCESS_NOTIFICATION_MESSAGE=تم إتمام النسخ الاحتياطي بنجاح
+FAIL_NOTIFICATION_MESSAGE=تم إتمام النسخ الاحتياطي مع أخطاء
+
+# About
+ABOUT_TITLE=حول البرنامج...
+LAST_UPDATE=آخر تحديث:
+
+# ExcludeFolder
+EXCLUDE_TITLE=المجلدات المستبعدة
+SELECT_EXCLUDE_FOLDER=اختر المجلد للاستبعاد
+OK=موافق
+CANCEL=إلغاء
+
+# Logs
+SAVE_AS=حفظ باسم...
+LOGS_FILE_DIALOG_FILTER=ملفات الدُفعات (*.bat)|*.bat|ملفات نصية (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=هل تريد إضافة أمر "pause" إلى الملف؟

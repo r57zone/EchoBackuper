@@ -1,0 +1,89 @@
+# Main
+ACTIVE=Active
+NAME=Name
+LEFT_FOLDER=Left Folder
+RIGHT_FOLDER=Right Folder
+REM_SELECTION=Remove Selection
+SELECT_ALL=Select All
+MOVE=Move
+UP=Up
+DOWN=Down
+RUN=Run
+FILE=File
+CREATE=Create
+OPEN=Open
+EXIT=Exit
+FOLDERS=Folders
+ADD=Add
+EDIT=Edit
+REMOVE=Remove
+EXCLUDE=Exclude
+STOP=Stop
+ALL_OPERATIONS=All Operations:
+CURRENT_OPERATION=Current Operation:
+HELP=Help
+FILE_DIALOG_FILTER=Backup Paths|*.ebp
+
+# Settings
+SETTINGS=Settings
+VIEW_TASKS=View Tasks Before Operations
+CHECKSUM_VERIFICATION_COPY=Checksum Verification After Copy
+COPY_CREATION_DATE=Preserve File Creation Date When Copying
+COPY_FILE_ATTRIBUTES=Preserve File Attributes When Copying
+
+# Statuses
+LOOKING_CHANGES=Searching for Changes in
+FILE_RENAMED=File Renamed:
+FOUND_NEW_FILE=Found New File:
+FILE_UPDATED=File Updated:
+FOUND_OLD_FILE=Found Old File:
+COPY_FILE=File is being copied:
+MOVE_FILE=File is being moved:
+RENAME_FILE=File is being renamed:
+REMOVE_FILE=File is being removed:
+CREATE_FOLDER=Folder is being created:
+REMOVE_FOLDER=Folder is being removed:
+CHECK_MOVE_FILES=Checking files for moving...
+
+COMPLETED=Completed
+COMPLETED_ERROR=Completed with Errors
+BACKUP_COMPLETED=Backup successfully completed.
+BACKUP_FAILED=There were problems creating the backup.
+CHECK_FILES=Files checked:
+TOTAL_OPERATIONS=Total operations:
+SUCCESS_COPY_FILES=Files successfully copied:
+SUCCESS_MOVE_FILES=Files successfully moved:
+SUCCESS_RENAME_FILES=Files successfully renamed:
+SUCCESS_REMOVE_FILES=Files successfully removed:
+SUCCESS_CREATE_FOLDERS=Folders successfully created:
+SUCCESS_REMOVE_FOLDERS=Folders successfully removed:
+FAIL_COPY_FILES=Failed to copy files:
+FAIL_MOVE_FILES=Failed to move files:
+FAIL_RENAME_FILES=Failed to rename files:
+FAIL_REMOVE_FILES=Failed to remove files:
+FAIL_CREATE_FOLDERS=Failed to create folders:
+FAIL_REMOVE_FOLDERS=Failed to remove folders:
+
+# Messages
+PERFORM_OPERATIONS=Perform operations?
+ENTER_NAME_PAIR_FOLDERS=Enter the name for linked folders:
+CHOOSE_LEFT_FOLDER=Choose left folder
+CHOOSE_RIGHT_FOLDER=Choose right folder
+CHOOSE_FOLDER_ERROR=Incorrect folders selected
+SUCCESS_NOTIFICATION_MESSAGE=Backup successfully completed
+FAIL_NOTIFICATION_MESSAGE=Backup completed with errors
+
+# About
+ABOUT_TITLE=About the program...
+LAST_UPDATE=Last update:
+
+# ExcludeFolder
+EXCLUDE_TITLE=Excluded folders
+SELECT_EXCLUDE_FOLDER=Select folder to exclude
+OK=OK
+CANCEL=Cancel
+
+# Logs
+SAVE_AS=Save As...
+LOGS_FILE_DIALOG_FILTER=Batch files (*.bat)|*.bat|Text files (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=Add "pause" command to file?

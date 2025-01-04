@@ -1,0 +1,89 @@
+# Main
+ACTIVE=Activo
+NAME=Nombre
+LEFT_FOLDER=Carpeta izquierda
+RIGHT_FOLDER=Carpeta derecha
+REM_SELECTION=Desmarcar selección
+SELECT_ALL=Seleccionar todo
+MOVE=Mover
+UP=Arriba
+DOWN=Abajo
+RUN=Ejecutar
+FILE=Archivo
+CREATE=Crear
+OPEN=Abrir
+EXIT=Salir
+FOLDERS=Carpetas
+ADD=Agregar
+EDIT=Editar
+REMOVE=Eliminar
+EXCLUDE=Excluir
+STOP=Detener
+ALL_OPERATIONS=Todas las operaciones:
+CURRENT_OPERATION=Operación actual:
+HELP=Ayuda
+FILE_DIALOG_FILTER=Rutas de copia de seguridad|*.ebp
+
+# Settings
+SETTINGS=Configuraciones
+VIEW_TASKS=Ver tareas antes de las operaciones
+CHECKSUM_VERIFICATION_COPY=Verificación de suma de comprobación después de copiar
+COPY_CREATION_DATE=Mantener la fecha de creación de los archivos al copiar
+COPY_FILE_ATTRIBUTES=Mantener los atributos de los archivos al copiar
+
+# Statuses
+LOOKING_CHANGES=Buscando cambios en
+FILE_RENAMED=Archivo renombrado:
+FOUND_NEW_FILE=Nuevo archivo encontrado:
+FILE_UPDATED=Archivo actualizado:
+FOUND_OLD_FILE=Archivo antiguo encontrado:
+COPY_FILE=Archivo copiado:
+MOVE_FILE=Archivo movido:
+RENAME_FILE=Archivo renombrado:
+REMOVE_FILE=Archivo eliminado:
+CREATE_FOLDER=Carpeta creada:
+REMOVE_FOLDER=Carpeta eliminada:
+CHECK_MOVE_FILES=Comprobando archivos para mover...
+
+COMPLETED=Completado
+COMPLETED_ERROR=Completado con errores
+BACKUP_COMPLETED=La copia de seguridad se completó con éxito.
+BACKUP_FAILED=Hubo problemas al crear la copia de seguridad.
+CHECK_FILES=Archivos verificados:
+TOTAL_OPERATIONS=Operaciones totales:
+SUCCESS_COPY_FILES=Archivos copiados con éxito:
+SUCCESS_MOVE_FILES=Archivos movidos con éxito:
+SUCCESS_RENAME_FILES=Archivos renombrados con éxito:
+SUCCESS_REMOVE_FILES=Archivos eliminados con éxito:
+SUCCESS_CREATE_FOLDERS=Carpetas creadas con éxito:
+SUCCESS_REMOVE_FOLDERS=Carpetas eliminadas con éxito:
+FAIL_COPY_FILES=Falló al copiar archivos:
+FAIL_MOVE_FILES=Falló al mover archivos:
+FAIL_RENAME_FILES=Falló al renombrar archivos:
+FAIL_REMOVE_FILES=Falló al eliminar archivos:
+FAIL_CREATE_FOLDERS=Falló al crear carpetas:
+FAIL_REMOVE_FOLDERS=Falló al eliminar carpetas:
+
+# Messages
+PERFORM_OPERATIONS=¿Ejecutar las operaciones?
+ENTER_NAME_PAIR_FOLDERS=Ingrese el nombre de las carpetas asociadas:
+CHOOSE_LEFT_FOLDER=Seleccione la carpeta izquierda
+CHOOSE_RIGHT_FOLDER=Seleccione la carpeta derecha
+CHOOSE_FOLDER_ERROR=Carpeta seleccionada incorrectamente
+SUCCESS_NOTIFICATION_MESSAGE=Copia de seguridad completada con éxito
+FAIL_NOTIFICATION_MESSAGE=Copia de seguridad completada con errores
+
+# About
+ABOUT_TITLE=Acerca del programa...
+LAST_UPDATE=Última actualización:
+
+# ExcludeFolder
+EXCLUDE_TITLE=Carpetas excluidas
+SELECT_EXCLUDE_FOLDER=Seleccione la carpeta para excluir
+OK=OK
+CANCEL=Cancelar
+
+# Logs
+SAVE_AS=Guardar como...
+LOGS_FILE_DIALOG_FILTER=Archivos por lotes (*.bat)|*.bat|Archivos de texto (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=¿Agregar el comando "pause" al archivo?

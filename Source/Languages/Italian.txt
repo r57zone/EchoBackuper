@@ -1,0 +1,89 @@
+# Main
+ACTIVE=Attivo
+NAME=Nome
+LEFT_FOLDER=Cartella sinistra
+RIGHT_FOLDER=Cartella destra
+REM_SELECTION=Rimuovi selezione
+SELECT_ALL=Seleziona tutto
+MOVE=Sposta
+UP=Sopra
+DOWN=Sotto
+RUN=Avvia
+FILE=File
+CREATE=Crea
+OPEN=Apri
+EXIT=Esci
+FOLDERS=Cartelle
+ADD=Aggiungi
+EDIT=Modifica
+REMOVE=Rimuovi
+EXCLUDE=Escludi
+STOP=Ferma
+ALL_OPERATIONS=Tutte le operazioni:
+CURRENT_OPERATION=Operazione corrente:
+HELP=Aiuto
+FILE_DIALOG_FILTER=Percorsi di backup|*.ebp
+
+# Settings
+SETTINGS=Impostazioni
+VIEW_TASKS=Visualizza le attività prima delle operazioni
+CHECKSUM_VERIFICATION_COPY=Verifica la somma di controllo dopo la copia
+COPY_CREATION_DATE=Conserva la data di creazione dei file durante la copia
+COPY_FILE_ATTRIBUTES=Conserva gli attributi dei file durante la copia
+
+# Statuses
+LOOKING_CHANGES=Cerca modifiche in
+FILE_RENAMED=File rinominato:
+FOUND_NEW_FILE=Nuovo file trovato:
+FILE_UPDATED=File aggiornato:
+FOUND_OLD_FILE=Vecchio file trovato:
+COPY_FILE=Il file è copiato:
+MOVE_FILE=Il file è spostato:
+RENAME_FILE=Il file è rinominato:
+REMOVE_FILE=Il file è rimosso:
+CREATE_FOLDER=La cartella è creata:
+REMOVE_FOLDER=La cartella è rimossa:
+CHECK_MOVE_FILES=Controllo dei file per lo spostamento...
+
+COMPLETED=Completato
+COMPLETED_ERROR=Completato con errori
+BACKUP_COMPLETED=Il backup è stato completato con successo.
+BACKUP_FAILED=Si sono verificati problemi durante la creazione del backup.
+CHECK_FILES=File controllati:
+TOTAL_OPERATIONS=Operazioni totali:
+SUCCESS_COPY_FILES=File copiati con successo:
+SUCCESS_MOVE_FILES=File spostati con successo:
+SUCCESS_RENAME_FILES=File rinominati con successo:
+SUCCESS_REMOVE_FILES=File rimossi con successo:
+SUCCESS_CREATE_FOLDERS=Cartelle create con successo:
+SUCCESS_REMOVE_FOLDERS=Cartelle rimosse con successo:
+FAIL_COPY_FILES=Impossibile copiare i file:
+FAIL_MOVE_FILES=Impossibile spostare i file:
+FAIL_RENAME_FILES=Impossibile rinominare i file:
+FAIL_REMOVE_FILES=Impossibile rimuovere i file:
+FAIL_CREATE_FOLDERS=Impossibile creare le cartelle:
+FAIL_REMOVE_FOLDERS=Impossibile rimuovere le cartelle:
+
+# Messages
+PERFORM_OPERATIONS=Eseguire le operazioni?
+ENTER_NAME_PAIR_FOLDERS=Inserisci il nome delle cartelle correlate:
+CHOOSE_LEFT_FOLDER=Scegli la cartella sinistra
+CHOOSE_RIGHT_FOLDER=Scegli la cartella destra
+CHOOSE_FOLDER_ERROR=Cartelle selezionate in modo errato
+SUCCESS_NOTIFICATION_MESSAGE=Backup completato con successo
+FAIL_NOTIFICATION_MESSAGE=Backup completato con errori
+
+# About
+ABOUT_TITLE=Informazioni sul programma...
+LAST_UPDATE=Ultimo aggiornamento:
+
+# ExcludeFolder
+EXCLUDE_TITLE=Cartelle escluse
+SELECT_EXCLUDE_FOLDER=Scegli una cartella da escludere
+OK=OK
+CANCEL=Annulla
+
+# Logs
+SAVE_AS=Salva con nome...
+LOGS_FILE_DIALOG_FILTER=File batch (*.bat)|*.bat|File di testo (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=Aggiungere il comando "pause" al file?

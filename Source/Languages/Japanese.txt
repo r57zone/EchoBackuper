@@ -1,0 +1,89 @@
+# Main
+ACTIVE=アクティブ
+NAME=名前
+LEFT_FOLDER=左フォルダ
+RIGHT_FOLDER=右フォルダ
+REM_SELECTION=選択解除
+SELECT_ALL=すべて選択
+MOVE=移動
+UP=上
+DOWN=下
+RUN=実行
+FILE=ファイル
+CREATE=作成
+OPEN=開く
+EXIT=終了
+FOLDERS=フォルダ
+ADD=追加
+EDIT=編集
+REMOVE=削除
+EXCLUDE=除外
+STOP=停止
+ALL_OPERATIONS=すべての操作:
+CURRENT_OPERATION=現在の操作:
+HELP=ヘルプ
+FILE_DIALOG_FILTER=バックアップパス|*.ebp
+
+# Settings
+SETTINGS=設定
+VIEW_TASKS=操作前にタスクを表示
+CHECKSUM_VERIFICATION_COPY=コピー後のチェックサム確認
+COPY_CREATION_DATE=コピー時にファイルの作成日を保持
+COPY_FILE_ATTRIBUTES=コピー時にファイル属性を保持
+
+# Statuses
+LOOKING_CHANGES=変更を検索中:
+FILE_RENAMED=ファイル名変更:
+FOUND_NEW_FILE=新しいファイルが見つかりました:
+FILE_UPDATED=ファイルが更新されました:
+FOUND_OLD_FILE=古いファイルが見つかりました:
+COPY_FILE=ファイルがコピーされました:
+MOVE_FILE=ファイルが移動されました:
+RENAME_FILE=ファイル名が変更されました:
+REMOVE_FILE=ファイルが削除されました:
+CREATE_FOLDER=フォルダが作成されました:
+REMOVE_FOLDER=フォルダが削除されました:
+CHECK_MOVE_FILES=移動するファイルを確認中...
+
+COMPLETED=完了
+COMPLETED_ERROR=エラーで完了
+BACKUP_COMPLETED=バックアップの作成が正常に完了しました。
+BACKUP_FAILED=バックアップ作成中に問題が発生しました。
+CHECK_FILES=チェックしたファイル数:
+TOTAL_OPERATIONS=総操作数:
+SUCCESS_COPY_FILES=正常にコピーされたファイル数:
+SUCCESS_MOVE_FILES=正常に移動されたファイル数:
+SUCCESS_RENAME_FILES=正常に名前変更されたファイル数:
+SUCCESS_REMOVE_FILES=正常に削除されたファイル数:
+SUCCESS_CREATE_FOLDERS=正常に作成されたフォルダ数:
+SUCCESS_REMOVE_FOLDERS=正常に削除されたフォルダ数:
+FAIL_COPY_FILES=コピーに失敗したファイル数:
+FAIL_MOVE_FILES=移動に失敗したファイル数:
+FAIL_RENAME_FILES=名前変更に失敗したファイル数:
+FAIL_REMOVE_FILES=削除に失敗したファイル数:
+FAIL_CREATE_FOLDERS=作成に失敗したフォルダ数:
+FAIL_REMOVE_FOLDERS=削除に失敗したフォルダ数:
+
+# Messages
+PERFORM_OPERATIONS=操作を実行しますか？
+ENTER_NAME_PAIR_FOLDERS=関連するフォルダ名を入力してください：
+CHOOSE_LEFT_FOLDER=左のフォルダを選択
+CHOOSE_RIGHT_FOLDER=右のフォルダを選択
+CHOOSE_FOLDER_ERROR=フォルダの選択が誤っています
+SUCCESS_NOTIFICATION_MESSAGE=バックアップが正常に完了しました
+FAIL_NOTIFICATION_MESSAGE=バックアップがエラーで完了しました
+
+# About
+ABOUT_TITLE=プログラムについて...
+LAST_UPDATE=最終更新日:
+
+# ExcludeFolder
+EXCLUDE_TITLE=除外されたフォルダ
+SELECT_EXCLUDE_FOLDER=除外するフォルダを選択
+OK=OK
+CANCEL=キャンセル
+
+# Logs
+SAVE_AS=名前を付けて保存...
+LOGS_FILE_DIALOG_FILTER=バッチファイル (*.bat)|*.bat|テキストファイル (*.txt)|*.txt
+ADD_PAUSE_TO_FILE="pause" コマンドをファイルに追加しますか？

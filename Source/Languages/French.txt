@@ -1,0 +1,89 @@
+# Main
+ACTIVE=Actif
+NAME=Nom
+LEFT_FOLDER=Dossier gauche
+RIGHT_FOLDER=Dossier droit
+REM_SELECTION=Retirer la sélection
+SELECT_ALL=Tout sélectionner
+MOVE=Déplacer
+UP=Haut
+DOWN=Bas
+RUN=Lancer
+FILE=Fichier
+CREATE=Créer
+OPEN=Ouvrir
+EXIT=Quitter
+FOLDERS=Dossiers
+ADD=Ajouter
+EDIT=Modifier
+REMOVE=Supprimer
+EXCLUDE=Exclure
+STOP=Arrêter
+ALL_OPERATIONS=Toutes les opérations :
+CURRENT_OPERATION=Opération en cours :
+HELP=Aide
+FILE_DIALOG_FILTER=Chemins de sauvegarde|*.ebp
+
+# Settings
+SETTINGS=Paramètres
+VIEW_TASKS=Voir les tâches avant les opérations
+CHECKSUM_VERIFICATION_COPY=Vérification de la somme de contrôle après la copie
+COPY_CREATION_DATE=Conserver la date de création des fichiers lors de la copie
+COPY_FILE_ATTRIBUTES=Conserver les attributs des fichiers lors de la copie
+
+# Statuses
+LOOKING_CHANGES=Recherche de modifications dans
+FILE_RENAMED=Fichier renommé :
+FOUND_NEW_FILE=Fichier nouveau trouvé :
+FILE_UPDATED=Fichier mis à jour :
+FOUND_OLD_FILE=Fichier ancien trouvé :
+COPY_FILE=Le fichier est copié :
+MOVE_FILE=Le fichier est déplacé :
+RENAME_FILE=Le fichier est renommé :
+REMOVE_FILE=Le fichier est supprimé :
+CREATE_FOLDER=Le dossier est créé :
+REMOVE_FOLDER=Le dossier est supprimé :
+CHECK_MOVE_FILES=Vérification des fichiers pour déplacement...
+
+COMPLETED=Terminé
+COMPLETED_ERROR=Terminé avec des erreurs
+BACKUP_COMPLETED=La sauvegarde a été terminée avec succès.
+BACKUP_FAILED=Des problèmes sont survenus lors de la création de la sauvegarde.
+CHECK_FILES=Fichiers vérifiés :
+TOTAL_OPERATIONS=Opérations totales :
+SUCCESS_COPY_FILES=Fichiers copiés avec succès :
+SUCCESS_MOVE_FILES=Fichiers déplacés avec succès :
+SUCCESS_RENAME_FILES=Fichiers renommés avec succès :
+SUCCESS_REMOVE_FILES=Fichiers supprimés avec succès :
+SUCCESS_CREATE_FOLDERS=Dossiers créés avec succès :
+SUCCESS_REMOVE_FOLDERS=Dossiers supprimés avec succès :
+FAIL_COPY_FILES=Échec de la copie des fichiers :
+FAIL_MOVE_FILES=Échec du déplacement des fichiers :
+FAIL_RENAME_FILES=Échec du renommage des fichiers :
+FAIL_REMOVE_FILES=Échec de la suppression des fichiers :
+FAIL_CREATE_FOLDERS=Échec de la création des dossiers :
+FAIL_REMOVE_FOLDERS=Échec de la suppression des dossiers :
+
+# Messages
+PERFORM_OPERATIONS=Exécuter les opérations ?
+ENTER_NAME_PAIR_FOLDERS=Entrez le nom des dossiers liés :
+CHOOSE_LEFT_FOLDER=Sélectionner le dossier gauche
+CHOOSE_RIGHT_FOLDER=Sélectionner le dossier droit
+CHOOSE_FOLDER_ERROR=Dossiers sélectionnés incorrects
+SUCCESS_NOTIFICATION_MESSAGE=Sauvegarde terminée avec succès
+FAIL_NOTIFICATION_MESSAGE=Sauvegarde terminée avec des erreurs
+
+# About
+ABOUT_TITLE=À propos du programme...
+LAST_UPDATE=Dernière mise à jour :
+
+# ExcludeFolder
+EXCLUDE_TITLE=Dossiers exclus
+SELECT_EXCLUDE_FOLDER=Sélectionner le dossier à exclure
+OK=D'accord
+CANCEL=Annuler
+
+# Logs
+SAVE_AS=Enregistrer sous...
+LOGS_FILE_DIALOG_FILTER=Fichiers batch (*.bat)|*.bat|Fichiers texte (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=Ajouter la commande "pause" au fichier ?

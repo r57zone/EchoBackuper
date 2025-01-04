@@ -1,0 +1,89 @@
+# Main
+ACTIVE=Aktiv
+NAME=Name
+LEFT_FOLDER=Linker Ordner
+RIGHT_FOLDER=Rechter Ordner
+REM_SELECTION=Auswahl entfernen
+SELECT_ALL=Alle auswählen
+MOVE=Verschieben
+UP=Nach oben
+DOWN=Nach unten
+RUN=Starten
+FILE=Datei
+CREATE=Erstellen
+OPEN=Öffnen
+EXIT=Beenden
+FOLDERS=Ordner
+ADD=Hinzufügen
+EDIT=Bearbeiten
+REMOVE=Entfernen
+EXCLUDE=Ausnehmen
+STOP=Stoppen
+ALL_OPERATIONS=Alle Operationen:
+CURRENT_OPERATION=Aktuelle Operation:
+HELP=Hilfe
+FILE_DIALOG_FILTER=Sicherungs-Pfade|*.ebp
+
+# Settings
+SETTINGS=Einstellungen
+VIEW_TASKS=Aufgaben vor den Operationen anzeigen
+CHECKSUM_VERIFICATION_COPY=Prüfziffer nach dem Kopieren überprüfen
+COPY_CREATION_DATE=Erstellungsdatum der Dateien beim Kopieren beibehalten
+COPY_FILE_ATTRIBUTES=Dateiattribute beim Kopieren beibehalten
+
+# Statuses
+LOOKING_CHANGES=Suche nach Änderungen in
+FILE_RENAMED=Datei umbenannt:
+FOUND_NEW_FILE=Neue Datei gefunden:
+FILE_UPDATED=Datei aktualisiert:
+FOUND_OLD_FILE=Alte Datei gefunden:
+COPY_FILE=Datei wird kopiert:
+MOVE_FILE=Datei wird verschoben:
+RENAME_FILE=Datei wird umbenannt:
+REMOVE_FILE=Datei wird gelöscht:
+CREATE_FOLDER=Ordner wird erstellt:
+REMOVE_FOLDER=Ordner wird gelöscht:
+CHECK_MOVE_FILES=Überprüfe Dateien auf Verschiebung...
+
+COMPLETED=Abgeschlossen
+COMPLETED_ERROR=Abgeschlossen mit Fehlern
+BACKUP_COMPLETED=Backup erfolgreich abgeschlossen.
+BACKUP_FAILED=Fehler beim Erstellen des Backups.
+CHECK_FILES=Überprüfte Dateien:
+TOTAL_OPERATIONS=Gesamtanzahl der Operationen:
+SUCCESS_COPY_FILES=Erfolgreich kopierte Dateien:
+SUCCESS_MOVE_FILES=Erfolgreich verschobene Dateien:
+SUCCESS_RENAME_FILES=Erfolgreich umbenannte Dateien:
+SUCCESS_REMOVE_FILES=Erfolgreich entfernte Dateien:
+SUCCESS_CREATE_FOLDERS=Erfolgreich erstellte Ordner:
+SUCCESS_REMOVE_FOLDERS=Erfolgreich entfernte Ordner:
+FAIL_COPY_FILES=Fehler beim Kopieren der Dateien:
+FAIL_MOVE_FILES=Fehler beim Verschieben der Dateien:
+FAIL_RENAME_FILES=Fehler beim Umbenennen der Dateien:
+FAIL_REMOVE_FILES=Fehler beim Entfernen der Dateien:
+FAIL_CREATE_FOLDERS=Fehler beim Erstellen der Ordner:
+FAIL_REMOVE_FOLDERS=Fehler beim Entfernen der Ordner:
+
+# Messages
+PERFORM_OPERATIONS=Operationen ausführen?
+ENTER_NAME_PAIR_FOLDERS=Geben Sie den Namen der verknüpften Ordner ein:
+CHOOSE_LEFT_FOLDER=Wählen Sie den linken Ordner
+CHOOSE_RIGHT_FOLDER=Wählen Sie den rechten Ordner
+CHOOSE_FOLDER_ERROR=Falsche Ordner ausgewählt
+SUCCESS_NOTIFICATION_MESSAGE=Backup erfolgreich abgeschlossen
+FAIL_NOTIFICATION_MESSAGE=Backup abgeschlossen mit Fehlern
+
+# About
+ABOUT_TITLE=Über das Programm...
+LAST_UPDATE=Letzte Aktualisierung:
+
+# ExcludeFolder
+EXCLUDE_TITLE=Ausgeschlossene Ordner
+SELECT_EXCLUDE_FOLDER=Ordner zum Ausschließen auswählen
+OK=OK
+CANCEL=Abbrechen
+
+# Logs
+SAVE_AS=Speichern unter...
+LOGS_FILE_DIALOG_FILTER=Batch-Dateien (*.bat)|*.bat|Textdateien (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=„Pause“-Befehl zur Datei hinzufügen?

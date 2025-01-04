@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus, ShlObj;
 
 type
   TExcludeFoldersForm = class(TForm)
@@ -81,7 +81,7 @@ procedure TExcludeFoldersForm.AddBtnClick(Sender: TObject);
 var
   ExcludePath: string;
 begin
-  ExcludePath:=Main.BrowseFolderDialog(PChar(IDS_SELECT_EXCLUDE_FOLDER));
+  ExcludePath:=Main.BrowseFolderDialog(PChar(IDS_SELECT_EXCLUDE_FOLDER), BIF_RETURNONLYFSDIRS or BIF_USENEWUI);
   if (ExcludePath <> '') and (Pos(ExcludePath + #13#10, ListBox.Items.Text) = 0) then
     ListBox.Items.Add(ExcludePath);
 end;
@@ -101,7 +101,7 @@ var
   ExcludePath: string;
 begin
   if ListBox.ItemIndex = -1 then Exit;
-  ExcludePath:=Main.BrowseFolderDialog(PChar(IDS_SELECT_EXCLUDE_FOLDER));
+  ExcludePath:=Main.BrowseFolderDialog(PChar(IDS_SELECT_EXCLUDE_FOLDER), BIF_RETURNONLYFSDIRS or BIF_USENEWUI);
   if (ExcludePath <> '') and (Pos(ExcludePath + #13#10, ListBox.Items.Text) = 0) then
     ListBox.Items.Strings[ListBox.ItemIndex]:=ExcludePath;
 end;

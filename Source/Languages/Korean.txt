@@ -1,0 +1,89 @@
+# Main
+ACTIVE=활성
+NAME=이름
+LEFT_FOLDER=왼쪽 폴더
+RIGHT_FOLDER=오른쪽 폴더
+REM_SELECTION=선택 취소
+SELECT_ALL=모두 선택
+MOVE=이동
+UP=위로
+DOWN=아래로
+RUN=실행
+FILE=파일
+CREATE=생성
+OPEN=열기
+EXIT=종료
+FOLDERS=폴더
+ADD=추가
+EDIT=편집
+REMOVE=삭제
+EXCLUDE=제외
+STOP=중지
+ALL_OPERATIONS=모든 작업:
+CURRENT_OPERATION=현재 작업:
+HELP=도움말
+FILE_DIALOG_FILTER=백업 경로|*.ebp
+
+# Settings
+SETTINGS=설정
+VIEW_TASKS=작업 실행 전 작업 보기
+CHECKSUM_VERIFICATION_COPY=복사 후 체크섬 확인
+COPY_CREATION_DATE=복사 시 파일 생성 날짜 유지
+COPY_FILE_ATTRIBUTES=복사 시 파일 속성 유지
+
+# Statuses
+LOOKING_CHANGES=변경 사항 검색 중:
+FILE_RENAMED=파일 이름 변경됨:
+FOUND_NEW_FILE=새로운 파일이 발견됨:
+FILE_UPDATED=파일이 업데이트됨:
+FOUND_OLD_FILE=오래된 파일이 발견됨:
+COPY_FILE=파일이 복사됨:
+MOVE_FILE=파일이 이동됨:
+RENAME_FILE=파일 이름이 변경됨:
+REMOVE_FILE=파일이 삭제됨:
+CREATE_FOLDER=폴더가 생성됨:
+REMOVE_FOLDER=폴더가 삭제됨:
+CHECK_MOVE_FILES=이동할 파일 확인 중...
+
+COMPLETED=완료
+COMPLETED_ERROR=오류로 완료됨
+BACKUP_COMPLETED=백업 생성이 성공적으로 완료됨.
+BACKUP_FAILED=백업 생성 중 문제가 발생함.
+CHECK_FILES=검사된 파일 수:
+TOTAL_OPERATIONS=총 작업 수:
+SUCCESS_COPY_FILES=성공적으로 복사된 파일 수:
+SUCCESS_MOVE_FILES=성공적으로 이동된 파일 수:
+SUCCESS_RENAME_FILES=성공적으로 이름 변경된 파일 수:
+SUCCESS_REMOVE_FILES=성공적으로 삭제된 파일 수:
+SUCCESS_CREATE_FOLDERS=성공적으로 생성된 폴더 수:
+SUCCESS_REMOVE_FOLDERS=성공적으로 삭제된 폴더 수:
+FAIL_COPY_FILES=복사에 실패한 파일 수:
+FAIL_MOVE_FILES=이동에 실패한 파일 수:
+FAIL_RENAME_FILES=이름 변경에 실패한 파일 수:
+FAIL_REMOVE_FILES=삭제에 실패한 파일 수:
+FAIL_CREATE_FOLDERS=폴더 생성에 실패한 수:
+FAIL_REMOVE_FOLDERS=폴더 삭제에 실패한 수:
+
+# Messages
+PERFORM_OPERATIONS=작업을 실행하시겠습니까?
+ENTER_NAME_PAIR_FOLDERS=연결된 폴더 이름을 입력하십시오:
+CHOOSE_LEFT_FOLDER=왼쪽 폴더 선택
+CHOOSE_RIGHT_FOLDER=오른쪽 폴더 선택
+CHOOSE_FOLDER_ERROR=잘못된 폴더 선택
+SUCCESS_NOTIFICATION_MESSAGE=백업이 성공적으로 완료됨
+FAIL_NOTIFICATION_MESSAGE=백업이 오류로 완료됨
+
+# About
+ABOUT_TITLE=프로그램 정보...
+LAST_UPDATE=마지막 업데이트:
+
+# ExcludeFolder
+EXCLUDE_TITLE=제외된 폴더
+SELECT_EXCLUDE_FOLDER=제외할 폴더 선택
+OK=확인
+CANCEL=취소
+
+# Logs
+SAVE_AS=다른 이름으로 저장...
+LOGS_FILE_DIALOG_FILTER=배치 파일 (*.bat)|*.bat|텍스트 파일 (*.txt)|*.txt
+ADD_PAUSE_TO_FILE="pause" 명령어를 파일에 추가하시겠습니까?

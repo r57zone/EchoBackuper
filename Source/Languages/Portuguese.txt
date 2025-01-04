@@ -1,0 +1,89 @@
+# Main
+ACTIVE=Ativo
+NAME=Nome
+LEFT_FOLDER=Pasta esquerda
+RIGHT_FOLDER=Pasta direita
+REM_SELECTION=Remover seleção
+SELECT_ALL=Selecionar tudo
+MOVE=Mover
+UP=Cima
+DOWN=Baixo
+RUN=Executar
+FILE=Arquivo
+CREATE=Criar
+OPEN=Abrir
+EXIT=Sair
+FOLDERS=Pastas
+ADD=Adicionar
+EDIT=Editar
+REMOVE=Remover
+EXCLUDE=Excluir
+STOP=Parar
+ALL_OPERATIONS=Todas as operações:
+CURRENT_OPERATION=Operação atual:
+HELP=Ajuda
+FILE_DIALOG_FILTER=Caminhos de backup|*.ebp
+
+# Settings
+SETTINGS=Configurações
+VIEW_TASKS=Exibir tarefas antes das operações
+CHECKSUM_VERIFICATION_COPY=Verificação de soma de verificação após a cópia
+COPY_CREATION_DATE=Manter data de criação dos arquivos ao copiar
+COPY_FILE_ATTRIBUTES=Manter atributos de arquivos ao copiar
+
+# Statuses
+LOOKING_CHANGES=Procurando alterações em
+FILE_RENAMED=Arquivo renomeado:
+FOUND_NEW_FILE=Novo arquivo encontrado:
+FILE_UPDATED=Arquivo atualizado:
+FOUND_OLD_FILE=Arquivo antigo encontrado:
+COPY_FILE=Arquivo copiado:
+MOVE_FILE=Arquivo movido:
+RENAME_FILE=Arquivo renomeado:
+REMOVE_FILE=Arquivo removido:
+CREATE_FOLDER=Pasta criada:
+REMOVE_FOLDER=Pasta removida:
+CHECK_MOVE_FILES=Verificando arquivos para mover...
+
+COMPLETED=Concluído
+COMPLETED_ERROR=Concluído com erros
+BACKUP_COMPLETED=Backup concluído com sucesso.
+BACKUP_FAILED=Ocorreu um problema ao criar o backup.
+CHECK_FILES=Arquivos verificados:
+TOTAL_OPERATIONS=Operações totais:
+SUCCESS_COPY_FILES=Arquivos copiados com sucesso:
+SUCCESS_MOVE_FILES=Arquivos movidos com sucesso:
+SUCCESS_RENAME_FILES=Arquivos renomeados com sucesso:
+SUCCESS_REMOVE_FILES=Arquivos removidos com sucesso:
+SUCCESS_CREATE_FOLDERS=Pastas criadas com sucesso:
+SUCCESS_REMOVE_FOLDERS=Pastas removidas com sucesso:
+FAIL_COPY_FILES=Falha ao copiar arquivos:
+FAIL_MOVE_FILES=Falha ao mover arquivos:
+FAIL_RENAME_FILES=Falha ao renomear arquivos:
+FAIL_REMOVE_FILES=Falha ao remover arquivos:
+FAIL_CREATE_FOLDERS=Falha ao criar pastas:
+FAIL_REMOVE_FOLDERS=Falha ao remover pastas:
+
+# Messages
+PERFORM_OPERATIONS=Executar as operações?
+ENTER_NAME_PAIR_FOLDERS=Digite o nome das pastas associadas:
+CHOOSE_LEFT_FOLDER=Escolha a pasta esquerda
+CHOOSE_RIGHT_FOLDER=Escolha a pasta direita
+CHOOSE_FOLDER_ERROR=Pasta selecionada incorretamente
+SUCCESS_NOTIFICATION_MESSAGE=Backup concluído com sucesso
+FAIL_NOTIFICATION_MESSAGE=Backup concluído com erro
+
+# About
+ABOUT_TITLE=Sobre o programa...
+LAST_UPDATE=Última atualização:
+
+# ExcludeFolder
+EXCLUDE_TITLE=Pastas excluídas
+SELECT_EXCLUDE_FOLDER=Selecione a pasta para excluir
+OK=OK
+CANCEL=Cancelar
+
+# Logs
+SAVE_AS=Salvar como...
+LOGS_FILE_DIALOG_FILTER=Arquivos em lote (*.bat)|*.bat|Arquivos de texto (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=Adicionar o comando "pause" ao arquivo?
