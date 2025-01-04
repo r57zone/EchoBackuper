@@ -54,6 +54,7 @@ var
   UTF8Str: UTF8String;
 begin
   UTF8Str:=UTF8Encode(Str);
+  if FileExists(FileName) then DeleteFile(FileName);
   FS:=TFileStream.Create(FileName, fmCreate);
   try
     FS.WriteBuffer(PAnsiChar(UTF8Str)^, Length(UTF8Str));
@@ -69,10 +70,12 @@ begin
   AddPauseCommand:=false;
   if not SaveDialog.Execute then Exit;
 
-  if SaveDialog.FilterIndex = 1 then
+  if SaveDialog.FilterIndex = 1 then begin
+    LogsMemo.Lines.Insert(0, 'chcp 65001');
     case MessageBox(Handle, PChar(IDS_ADD_PAUSE_TO_FILE), PChar(Caption), 35) of
-      6: begin AddPauseCommand:=true; LogsMemo.Lines.Add('pause'); LogsMemo.Lines.Insert(0, 'chcp 65001'); end;
+      6: begin AddPauseCommand:=true; LogsMemo.Lines.Add('pause'); end;
     end;
+  end;
 
   //LogsMemo.Lines.SaveToFile(SaveDialog.FileName, TEncoding.UTF8); // BOM
   SaveUTF8File(SaveDialog.FileName, LogsMemo.Text); // Без BOM
