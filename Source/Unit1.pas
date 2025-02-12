@@ -913,8 +913,13 @@ begin
   CreateBtn.Enabled:=false;
   OpenBtn.Enabled:=false;
   OpenBtn2.Enabled:=false;
+  RemSelectionBtn.Enabled:=false;
+  SelectAllBtn.Enabled:=false;
   AddBtn.Enabled:=false;
   AddBtn2.Enabled:=false;
+  EditBtn.Enabled:=false;
+  EditBtn2.Enabled:=false;
+  MoveBtn.Enabled:=false;
   SettingsBtn.Enabled:=false;
   RemBtn.Enabled:=false;
   RemBtn2.Enabled:=false;
@@ -1002,8 +1007,13 @@ begin
   OpenBtn.Enabled:=true;
   OpenBtn2.Enabled:=true;
   RunBtn.Enabled:=true;
+  RemSelectionBtn.Enabled:=true;
+  SelectAllBtn.Enabled:=true;
   AddBtn.Enabled:=true;
   AddBtn2.Enabled:=true;
+  EditBtn.Enabled:=true;
+  EditBtn2.Enabled:=true;
+  MoveBtn.Enabled:=true;
   SettingsBtn.Enabled:=true;
   RemBtn.Enabled:=true;
   RemBtn2.Enabled:=true;
@@ -1402,8 +1412,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 1.0.2' + #13#10 +
-  IDS_LAST_UPDATE + ' 04.01.25' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 1.0.3' + #13#10 +
+  IDS_LAST_UPDATE + ' 12.02.25' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(IDS_ABOUT_TITLE), MB_ICONINFORMATION);
 end;
