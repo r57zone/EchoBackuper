@@ -30,7 +30,7 @@ Folgende Sprachen werden unterstützt: Englisch, Russisch, Chinesisch (tradition
 
 `-s` - ller Modus mit abschließender Benachrichtigung. Für Benachrichtigungen müssen Sie die Anwendung [Notifications](https://github.com/r57zone/notifications) herunterladen, unter „Programme“ (Program Files) entpacken und führen Sie es einmal aus.
 
-![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
+![](https://github.com/user-attachments/assets/589c3671-2913-474d-9515-97afc60af4d9)
 
 ## Screenshots
 [![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224440-d6362d7c-3cf0-47d2-9aaf-6b3b7d823b75.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/a42082e5-e67e-4640-8484-a253eda65329)

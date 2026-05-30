@@ -31,7 +31,7 @@ The following languages ​​are supported: English, Russian, Chinese (Traditio
 
 `-s` - silent mode with final notification. For notifications need to download the application [Notifications](https://github.com/r57zone/notifications), unpack to "Program Files" and run 1 time.
 
-![](https://user-images.githubusercontent.com/9499881/65593964-b96af000-dfa2-11e9-814b-bf03625359a5.png)
+![](https://github.com/user-attachments/assets/589c3671-2913-474d-9515-97afc60af4d9)
 
 ## Screenshots
 [![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224440-d6362d7c-3cf0-47d2-9aaf-6b3b7d823b75.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/a42082e5-e67e-4640-8484-a253eda65329)

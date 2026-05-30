@@ -30,7 +30,7 @@
 
 `-s` - тихий режим с финальном уведомлением. Для уведомлений нужно загрузить приложение [Уведомления](https://github.com/r57zone/notifications), распаковать в "Program Files" и запустите 1 раз.
 
-![](https://user-images.githubusercontent.com/9499881/65593028-c4bd1c00-dfa0-11e9-8baf-9f3bc571933e.png)
+![](https://github.com/user-attachments/assets/a2de5a3c-cd63-42e0-8397-e7cf9159a6b2)
 
 ## Скриншоты
 [![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224551-28062e0d-e4dd-49cf-a4a6-ed5d2b61f5e7.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/20ba3b9b-1cc0-477c-bd5b-1c7624104a06)
