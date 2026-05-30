@@ -1,0 +1,89 @@
+# Main
+ACTIVE=啟用
+NAME=名稱
+LEFT_FOLDER=左側資料夾
+RIGHT_FOLDER=右側資料夾
+REM_SELECTION=取消選取
+SELECT_ALL=全選
+MOVE=移動
+UP=上移
+DOWN=下移
+RUN=執行
+FILE=檔案
+CREATE=建立
+OPEN=開啟
+EXIT=結束
+FOLDERS=資料夾
+ADD=新增
+EDIT=編輯
+REMOVE=刪除
+EXCLUDE=排除
+STOP=停止
+ALL_OPERATIONS=所有操作：
+CURRENT_OPERATION=目前操作：
+HELP=說明
+FILE_DIALOG_FILTER=備份路徑|*.ebp
+
+# Settings
+SETTINGS=設定
+VIEW_TASKS=在操作前檢視任務
+CHECKSUM_VERIFICATION_COPY=複製後進行校驗和驗證
+COPY_CREATION_DATE=複製時保留檔案建立日期
+COPY_FILE_ATTRIBUTES=複製時保留檔案屬性
+
+# Statuses
+LOOKING_CHANGES=正在搜尋變更於
+FILE_RENAMED=檔案已重新命名：
+FOUND_NEW_FILE=發現新檔案：
+FILE_UPDATED=檔案已更新：
+FOUND_OLD_FILE=發現舊檔案：
+COPY_FILE=正在複製檔案：
+MOVE_FILE=正在移動檔案：
+RENAME_FILE=正在重新命名檔案：
+REMOVE_FILE=正在刪除檔案：
+CREATE_FOLDER=正在建立資料夾：
+REMOVE_FOLDER=正在刪除資料夾：
+CHECK_MOVE_FILES=正在檢查待移動的檔案...
+
+COMPLETED=已完成
+COMPLETED_ERROR=完成但有錯誤
+BACKUP_COMPLETED=備份已成功完成。
+BACKUP_FAILED=建立備份時發生問題。
+CHECK_FILES=已檢查的檔案：
+TOTAL_OPERATIONS=總操作數：
+SUCCESS_COPY_FILES=已成功複製的檔案：
+SUCCESS_MOVE_FILES=已成功移動的檔案：
+SUCCESS_RENAME_FILES=已成功重新命名的檔案：
+SUCCESS_REMOVE_FILES=已成功刪除的檔案：
+SUCCESS_CREATE_FOLDERS=已成功建立的資料夾：
+SUCCESS_REMOVE_FOLDERS=已成功刪除的資料夾：
+FAIL_COPY_FILES=複製失敗的檔案：
+FAIL_MOVE_FILES=移動失敗的檔案：
+FAIL_RENAME_FILES=重新命名失敗的檔案：
+FAIL_REMOVE_FILES=刪除失敗的檔案：
+FAIL_CREATE_FOLDERS=建立失敗的資料夾：
+FAIL_REMOVE_FOLDERS=刪除失敗的資料夾：
+
+# Messages
+PERFORM_OPERATIONS=執行操作？
+ENTER_NAME_PAIR_FOLDERS=請輸入連結資料夾的名稱：
+CHOOSE_LEFT_FOLDER=選擇左側資料夾
+CHOOSE_RIGHT_FOLDER=選擇右側資料夾
+CHOOSE_FOLDER_ERROR=所選資料夾不正確
+SUCCESS_NOTIFICATION_MESSAGE=備份已成功完成
+FAIL_NOTIFICATION_MESSAGE=備份完成但有錯誤
+
+# About
+ABOUT_TITLE=關於本程式...
+LAST_UPDATE=最後更新：
+
+# ExcludeFolder
+EXCLUDE_TITLE=已排除的資料夾
+SELECT_EXCLUDE_FOLDER=選擇要排除的資料夾
+OK=確定
+CANCEL=取消
+
+# Logs
+SAVE_AS=另存新檔...
+LOGS_FILE_DIALOG_FILTER=批次檔案 (*.bat)|*.bat|文字檔案 (*.txt)|*.txt
+ADD_PAUSE_TO_FILE=是否要將「pause」命令新增至檔案？

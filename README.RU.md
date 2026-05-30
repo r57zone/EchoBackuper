@@ -37,7 +37,7 @@
 [![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224561-2ddde940-ca38-49de-af7f-fcf313da8f2e.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/d2803032-ff6b-47d1-a2a0-246dc1bcb35e)
 
 ## Загрузка
->Версия для Windows 7, 8.1, 10, 11.
+>Поддерживается Windows 10, 11.
 
 **[Загрузить](https://github.com/r57zone/EchoBackuper/releases)**
 

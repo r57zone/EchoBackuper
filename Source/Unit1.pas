@@ -109,6 +109,8 @@ type
 var
   Main: TMain;
 
+  AppFilePath: string;
+
   FSActions: TList<TFSAction>;
   //Actions,
   ExcludePaths, ExcludeRenameFiles: TStringList;
@@ -227,6 +229,7 @@ var
   SourceFileSize, CopySize: int64;
   Buffer: array[0..BufferSize-1] of Byte;
   SameSizes: boolean;
+  CurrentFileCopyPercentage, LastFileCopyPercentage: integer;
 begin
   Result:=false;
   try
@@ -246,15 +249,20 @@ begin
 
       try
         CopySize:=0;
+        LastFileCopyPercentage:=-1;
         Main.ProgressBar2.Position:=0;
         repeat
           if (not ReadFile(SourceFile, Buffer, BufferSize, NumRead, nil)) or (NumRead = 0) then break; // NumRead = 0 для пустых файлов
           if not WriteFile(TargetFile, Buffer, NumRead, NumWritten, nil) then break;
           CopySize:=CopySize + NumWritten; // Inc(CopySize, NumWritten);
-          StatusText(IDS_COPY_FILE + ' ' + IntToStr(Trunc(CopySize / SourceFileSize * 100)) + '% - ' + SourceFileName, SourceFileName);
-          Main.ProgressBar2.Position:=Trunc(CopySize / SourceFileSize * 100);
+          CurrentFileCopyPercentage:=Trunc(CopySize / SourceFileSize * 100);
+          if CurrentFileCopyPercentage <> LastFileCopyPercentage then begin
+            LastFileCopyPercentage:=CurrentFileCopyPercentage;
+            StatusText(IDS_COPY_FILE + ' ' + IntToStr(CurrentFileCopyPercentage) + '% - ' + SourceFileName, SourceFileName);
+            Main.ProgressBar2.Position:=CurrentFileCopyPercentage;
+            Application.ProcessMessages;
+          end;
           if StopRequest then break;
-          Application.ProcessMessages;
         until (NumRead = 0) or (NumWritten <> NumRead);
       finally
         FileClose(TargetFile);
@@ -270,7 +278,7 @@ begin
   finally
     Application.ProcessMessages;
 
-    if (StopRequest = false) and (SameSizes) and (FileSetDate( TargetFileName, FileAge(SourceFileName) ) = 0) and
+    if (StopRequest = false) and (SameSizes) and (FileSetDate( TargetFileName, FileAge(SourceFileName) ) = 0) and // FileSetDate и FileAge не работают с файлами 1970 года, замена на WinAPI не помогла в присваении старой даты, пусть остается как есть
        ( (WriteCreationDate = false) or (FileSetCreatedDate( TargetFileName, FileCreatedAge(SourceFileName) ) = 0) ) and
        ( (CRCCopyCheck = false) or (CalculateCRC32(SourceFileName) = CalculateCRC32(TargetFileName)) ) and
        ( (WriteAttributes = false) or (FileSetAttr(TargetFileName, FileGetAttr(SourceFileName)) = 0) ) then Result:=true; // Атрибуты присваиваем в последнюю очередь, потому что еще нужно обновить даты создания и изменения
@@ -696,11 +704,11 @@ begin
   Reg.Free;
 end;
 
-function GetLocaleInformation(Flag: integer): string;
+function GetLocaleInformation(Flag: integer): string; // If there are multiple languages in the system (with sorting) / Если в системе несколько языков (с сортировкой)
 var
-  pcLCA: array [0..20] of Char;
+  pcLCA: array [0..63] of Char;
 begin
-  if GetLocaleInfo(LOCALE_SYSTEM_DEFAULT, Flag, pcLCA, 19) <= 0 then
+  if GetLocaleInfo((DWORD(SORT_DEFAULT) shl 16) or Word(GetUserDefaultUILanguage), Flag, pcLCA, Length(pcLCA)) <= 0 then
     pcLCA[0]:=#0;
   Result:=pcLCA;
 end;
@@ -708,9 +716,22 @@ end;
 procedure TMain.FormCreate(Sender: TObject);
 var
   Ini: TIniFile; i: integer; CustomBackupFile: string;
-  LangFileName: string; LangFile: TLangFile;
+  SystemLang, LangFileName, ForceLangFile: string; LangFile: TLangFile;
 begin
-  Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Config.ini');
+  Application.Title:=Caption;
+  AppFilePath:=ExtractFilePath(ParamStr(0));
+
+  for i:=1 to ParamCount do begin
+    if ParamStr(i) = '-b' then
+      CustomBackupFile:=ParamStr(i + 1);
+    if ParamStr(i) = '-s' then
+      SilentMode:=true
+    else if ParamStr(i) = '-lang' then
+      ForceLangFile:=ParamStr(i + 1);
+  end;
+
+
+  Ini:=TIniFile.Create(AppFilePath + 'Config.ini');
   CheckLogShow:=Ini.ReadBool('Main', 'LookTasks', true);
   OpenDialog.InitialDir:=Ini.ReadString('Main', 'BackupFilesFolder', '');
   CRCCopyCheck:=Ini.ReadBool('Main', 'CRCCopyCheck', false);
@@ -718,12 +739,24 @@ begin
   WriteAttributes:=Ini.ReadBool('Main', 'WriteAttributes', false);
   Ini.Free;
 
-  //Width:=588;
+  //Width:=592;
   //Height:=424;
 
   // Перевод
-  LangFileName:=GetLocaleInformation(LOCALE_SENGLANGUAGE) + '.txt';
-  if not FileExists(ExtractFilePath(ParamStr(0)) + 'Languages\' + LangFileName) then
+  SystemLang:=GetLocaleInformation(LOCALE_SENGLANGUAGE);
+  if Pos('Chinese', SystemLang) > 0  then begin
+    if Pos('Traditional', SystemLang) > 0 then
+      SystemLang:='Chinese (Traditional)'
+    else
+      SystemLang:='Chinese (Simplified)';
+  end else if Pos('Spanish', SystemLang) > 0 then
+    SystemLang:='Spanish'
+  else if Pos('Portuguese', SystemLang) > 0 then
+    SystemLang:='Portuguese';
+
+  if ForceLangFile <> '' then SystemLang:=ForceLangFile;
+  LangFileName:=SystemLang + '.txt';
+  if not FileExists(AppFilePath + 'Languages\' + LangFileName) then
     LangFileName:='English.txt';
   //LangFileName:='English.txt';
   //LangFileName:='Chinese.txt';
@@ -735,7 +768,7 @@ begin
   //LangFileName:='Italian.txt';
   //LangFileName:='Korean.txt';
 
-  LangFile:=TLangFile.Create(ExtractFilePath(ParamStr(0)) + 'Languages\' + LangFileName);
+  LangFile:=TLangFile.Create(AppFilePath + 'Languages\' + LangFileName);
   try
     ListView.Columns[0].Caption:=LangFile.GetString('ACTIVE', '');
     ListView.Columns[1].Caption:=LangFile.GetString('NAME', '');
@@ -833,21 +866,12 @@ begin
     LangFile.Free;
   end;
 
-  Application.Title:=Caption;
-
-  for i:=1 to ParamCount do begin
-    if ParamStr(i) = '-b' then
-      CustomBackupFile:=ParamStr(i + 1);
-    if ParamStr(i) = '-s' then
-      SilentMode:=true;
-  end;
-
   ExcludePaths:=TStringList.Create; // Создаём до загрузки путей для исключения
 
   if CustomBackupFile = '' then
-    LoadBackupPaths(ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME)
+    LoadBackupPaths(AppFilePath + BACKUP_PATHS_FILE_NAME)
   else
-    LoadBackupPaths(ExtractFilePath(ParamStr(0)) + CustomBackupFile);
+    LoadBackupPaths(AppFilePath + CustomBackupFile);
 
   //Actions:=TStringList.Create;
   FSActions:=TList<TFSAction>.Create;
@@ -1124,8 +1148,10 @@ var
   Ini: TIniFile;
 begin
   if not OpenDialog.Execute then Exit;
+  ProgressBar.Position:=0;
+  StatusBar.SimpleText:='';
   LoadBackupPaths(OpenDialog.FileName);
-  Ini:=TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'Config.ini');
+  Ini:=TIniFile.Create(AppFilePath + 'Config.ini');
   Ini.WriteString('Main', 'BackupFilesFolder', ExtractFilePath(OpenDialog.FileName)); // Сохраняем последний выбранный каталог
   Ini.Free;
 end;
@@ -1154,13 +1180,13 @@ begin
   LoadExcludePaths:=false;
 
   if FileExists(FileName) then begin
-    BackupPaths.LoadFromFile(FileName);
+    BackupPaths.LoadFromFile(FileName, TEncoding.UTF8);
 
     // Сохраняем текущий путь для сохранения
     CurrentBackupFilePath:=FileName;
   end else
     // Если файл не найден, то читаем дефолтный файл
-    CurrentBackupFilePath:=ExtractFilePath(ParamStr(0)) + BACKUP_PATHS_FILE_NAME;
+    CurrentBackupFilePath:=AppFilePath + BACKUP_PATHS_FILE_NAME;
 
 
   for i:=1 to BackupPaths.Count - 1 do begin // Первая строка зарезервирована под "PAIR FOLDERS:"
@@ -1245,7 +1271,7 @@ begin
   BackupPaths.Add(EXCLUDE_PATHS_FILE);
   BackupPaths.Add(Trim(ExcludePaths.Text));
 
-  BackupPaths.SaveToFile(CurrentBackupFilePath); // Сохраняем в текущий открытый файл
+  BackupPaths.SaveToFile(CurrentBackupFilePath, TEncoding.UTF8); // Сохраняем в текущий открытый файл
   BackupPaths.Free;
 end;
 
@@ -1412,8 +1438,8 @@ end;
 
 procedure TMain.AboutBtnClick(Sender: TObject);
 begin
-  Application.MessageBox(PChar(Caption + ' 1.0.3' + #13#10 +
-  IDS_LAST_UPDATE + ' 12.02.25' + #13#10 +
+  Application.MessageBox(PChar(Caption + ' 1.1' + #13#10 +
+  IDS_LAST_UPDATE + ' 30.05.26' + #13#10 +
   'https://r57zone.github.io' + #13#10 +
   'r57zone@gmail.com'), PChar(IDS_ABOUT_TITLE), MB_ICONINFORMATION);
 end;

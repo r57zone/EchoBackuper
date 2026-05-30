@@ -23,7 +23,7 @@ Folgende Sprachen werden unterstützt: Englisch, Russisch, Chinesisch (tradition
 ![flag-north-korea](https://github.com/user-attachments/assets/5b315a3d-6ce0-4cbb-b7a3-133ef2bcb2c5)
 ![flag-south-korea](https://github.com/user-attachments/assets/ed3d3778-9193-444a-85fd-ac5dd7bc91c6)
 
-## Silent Mode
+## Stiller Modus
 >EchoBackuper.exe -b "BackupPaths.ebp" -s
 
 `-b backup_ext_hdd.ebp` - Eine andere Liste von Paar- und Ausschlussordnern laden. Die „ebp“-Dateien werden im Programm selbst erstellt.
@@ -36,10 +36,10 @@ Folgende Sprachen werden unterstützt: Englisch, Russisch, Chinesisch (tradition
 [![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224440-d6362d7c-3cf0-47d2-9aaf-6b3b7d823b75.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/a42082e5-e67e-4640-8484-a253eda65329)
 [![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224456-38066115-c0ba-445d-9ded-86bb98de617c.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/b973da26-7da7-4c2b-b6a4-9dccf418c8a8)
 
-## Download
->Version für Windows 7, 8.1, 10, 11.
+## Herunterladen
+>Unterstützt Windows 10 und 11.
 
-**[Download](https://github.com/r57zone/EchoBackuper/releases)**
+**[Herunterladen](https://github.com/r57zone/EchoBackuper/releases)**
 
 ## Feedback
 `r57zone[at]gmail.com`

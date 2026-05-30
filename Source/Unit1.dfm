@@ -4,7 +4,7 @@ object Main: TMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'EchoBackuper'
-  ClientHeight = 366
+  ClientHeight = 365
   ClientWidth = 576
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -34,15 +34,14 @@ object Main: TMain
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 347
+    Top = 346
     Width = 576
     Height = 19
     Panels = <>
     ParentShowHint = False
     ShowHint = True
     SimplePanel = True
-    ExplicitTop = 346
-    ExplicitWidth = 572
+    ExplicitTop = 347
   end
   object RunBtn: TButton
     Left = 88

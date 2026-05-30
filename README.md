@@ -38,7 +38,7 @@ The following languages ​​are supported: English, Russian, Chinese (Traditio
 [![](https://github-production-user-asset-6210df.s3.amazonaws.com/9499881/260224456-38066115-c0ba-445d-9ded-86bb98de617c.jpg)](https://github.com/r57zone/EchoBackuper/assets/9499881/b973da26-7da7-4c2b-b6a4-9dccf418c8a8)
 
 ## Download
->Version for Windows 7, 8.1, 10, 11.
+>Supports Windows 10, 11.
 
 **[Download](https://github.com/r57zone/EchoBackuper/releases)**
 
