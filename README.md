@@ -7,7 +7,7 @@
 Application for backups. Backups are created using the echo principle. New and updated files are copied from the original folder to the backup. Renaming, moving and deleting files occurs only in the backup.
 
 
-The following languages ​​are supported: English, Russian, Chinese (Traditional), Spanish, Portuguese (Brazilian Portuguese), French, German, Japanese, Arabic, Italian and Korean.
+The following languages ​​are supported: English, Russian, Chinese (Simplified/Traditional), Spanish, Portuguese (Brazilian Portuguese), French, German, Japanese, Arabic, Italian and Korean.
 
 ![flag-united-kingdom](https://github.com/user-attachments/assets/8c03c9b8-d154-466f-b9c4-6ea60278d537)
 ![flag-russia](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)

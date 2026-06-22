@@ -6,7 +6,7 @@
 Anwendung für Backups. Backups werden nach dem Echo-Prinzip erstellt. Neue und aktualisierte Dateien werden vom Originalordner in das Backup kopiert. Das Umbenennen, Verschieben und Löschen von Dateien erfolgt nur im Backup.
 
 
-Folgende Sprachen werden unterstützt: Englisch, Russisch, Chinesisch (traditionell), Spanisch, Portugiesisch (brasilianisches Portugiesisch), Französisch, Deutsch, Japanisch, Arabisch, Italienisch und Koreanisch.
+Folgende Sprachen werden unterstützt: Englisch, Russisch, Chinesisch (Vereinfacht/Traditionell), Spanisch, Portugiesisch (brasilianisches Portugiesisch), Französisch, Deutsch, Japanisch, Arabisch, Italienisch und Koreanisch.
 
 ![flag-united-kingdom](https://github.com/user-attachments/assets/8c03c9b8-d154-466f-b9c4-6ea60278d537)
 ![flag-russia](https://user-images.githubusercontent.com/9499881/27683795-5b0fbac6-5cd8-11e7-929c-057833e01fb1.png)
